@@ -1,0 +1,240 @@
+Removed Pin From Net: NetName=NetC?_1 Pin=C?-1
+Removed Pin From Net: NetName=SGN_GND Pin=C?-1
+Removed Pin From Net: NetName=GND_IN Pin=D?-2
+Removed Pin From Net: NetName=LTDC_G0 Pin=U?-4
+Removed Pin From Net: NetName=LTDC_G1 Pin=U?-5
+Removed Pin From Net: NetName=FMC_A2 Pin=U?-12
+Removed Pin From Net: NetName=FMC_A3 Pin=U?-13
+Removed Pin From Net: NetName=FMC_A4 Pin=U?-14
+Removed Pin From Net: NetName=FMC_A5 Pin=U?-15
+Removed Pin From Net: NetName=GND_IN Pin=U?-16
+Removed Pin From Net: NetName=VDD Pin=U?-17
+Removed Pin From Net: NetName=UART7_RX Pin=U?-18
+Removed Pin From Net: NetName=UART7_TX Pin=U?-19
+Removed Pin From Net: NetName=UART7_RTS Pin=U?-20
+Removed Pin From Net: NetName=NetC?_1 Pin=Y?-1
+Added Component: Designator=U?(ST LQFP-144 20X20MM)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2025 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Name"; Value = "STMicroelectronics"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "STM32F746ZGT6G"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "Type"; VariantName = "[No Variations]"
+Added Component: Designator=U?(ST LQFP-144 20X20MM)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2025 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Name"; Value = "STMicroelectronics"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "STM32F746ZGT6G"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "Type"; VariantName = "[No Variations]"
+Added Component: Designator=U?(ST LQFP-144 20X20MM)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2025 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Name"; Value = "STMicroelectronics"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "STM32F746ZGT6G"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "Type"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=+5VISO Pin=C?-1
+Added Pin To Net: NetName=AGND Pin=C?-1
+Added Pin To Net: NetName=GND_IN Pin=C?-1
+Added Pin To Net: NetName=NetC?_1 Pin=C?-1
+Added Pin To Net: NetName=SGN_GND Pin=C?-1
+Added Pin To Net: NetName=AVDD Pin=C?-2
+Added Pin To Net: NetName=GND_IN Pin=C?-2
+Added Pin To Net: NetName=NetC?_1 Pin=D?-1
+Added Pin To Net: NetName=+5VDC Pin=D?-2
+Added Pin To Net: NetName=+12VIN Pin=D?-2
+Added Pin To Net: NetName=GND_IN Pin=D?-2
+Added Pin To Net: NetName=+5VDC Pin=FB?-2
+Added Pin To Net: NetName=NetC?_1 Pin=IC?-8
+Add Pin To Net: Unknown Pin: Pin J?-1
+Add Pin To Net: Unknown Pin: Pin J?-2
+Add Pin To Net: Unknown Pin: Pin J?-3
+Add Pin To Net: Unknown Pin: Pin L?-1
+Add Pin To Net: Unknown Pin: Pin L?-1
+Add Pin To Net: Unknown Pin: Pin L?-1
+Add Pin To Net: Unknown Pin: Pin L?-2
+Add Pin To Net: Unknown Pin: Pin SW?-1
+Add Pin To Net: Unknown Pin: Pin SW?-2
+Add Pin To Net: Unknown Pin: Pin SW?-3
+Add Pin To Net: Unknown Pin: Pin SW?-4
+Add Pin To Net: Unknown Pin: Pin TP?-1
+Add Pin To Net: Unknown Pin: Pin TP?-1
+Add Pin To Net: Unknown Pin: Pin TP?-1
+Added Pin To Net: NetName=LTDC_G0 Pin=U?-4
+Added Pin To Net: NetName=LTDC_G1 Pin=U?-5
+Added Pin To Net: NetName=FMC_A0 Pin=U?-10
+Added Pin To Net: NetName=FMC_A1 Pin=U?-11
+Added Pin To Net: NetName=FMC_A2 Pin=U?-12
+Added Pin To Net: NetName=FMC_A3 Pin=U?-13
+Added Pin To Net: NetName=FMC_A4 Pin=U?-14
+Added Pin To Net: NetName=FMC_A5 Pin=U?-15
+Added Pin To Net: NetName=GND_IN Pin=U?-16
+Added Pin To Net: NetName=VDD Pin=U?-17
+Added Pin To Net: NetName=UART7_RX Pin=U?-18
+Added Pin To Net: NetName=UART7_TX Pin=U?-19
+Added Pin To Net: NetName=UART7_RTS Pin=U?-20
+Added Pin To Net: NetName=UART7_CTS Pin=U?-21
+Added Pin To Net: NetName=NetSW?_1 Pin=U?-25
+Added Pin To Net: NetName=LTDC_R5 Pin=U?-26
+Added Pin To Net: NetName=SPI2_MOSI Pin=U?-27
+Added Pin To Net: NetName=SPI2_MISO Pin=U?-28
+Added Pin To Net: NetName=FMC_SDCKE0 Pin=U?-29
+Added Pin To Net: NetName=VDD Pin=U?-30
+Added Pin To Net: NetName=AGND Pin=U?-31
+Added Pin To Net: NetName=AVDD Pin=U?-32
+Added Pin To Net: NetName=AVDD Pin=U?-33
+Added Pin To Net: NetName=USART2_CTS Pin=U?-34
+Added Pin To Net: NetName=LTDC_R2 Pin=U?-35
+Added Pin To Net: NetName=LTDC_R1 Pin=U?-36
+Added Pin To Net: NetName=LTDC_B5 Pin=U?-37
+Added Pin To Net: NetName=GND_IN Pin=U?-38
+Added Pin To Net: NetName=VDD Pin=U?-39
+Added Pin To Net: NetName=LTDC_VSYNC Pin=U?-40
+Added Pin To Net: NetName=LTDC_R4 Pin=U?-41
+Added Pin To Net: NetName=LTDC_G2 Pin=U?-42
+Added Pin To Net: NetName=FMC_SDNWE Pin=U?-43
+Added Pin To Net: NetName=FMC_SDNE0 Pin=U?-44
+Added Pin To Net: NetName=LTDC_R3 Pin=U?-46
+Added Pin To Net: NetName=LTDC_R6 Pin=U?-47
+Added Pin To Net: NetName=FMC_SDNRAS Pin=U?-49
+Added Pin To Net: NetName=FMC_A6 Pin=U?-50
+Added Pin To Net: NetName=GND_IN Pin=U?-51
+Added Pin To Net: NetName=VDD Pin=U?-52
+Added Pin To Net: NetName=FMC_A7 Pin=U?-53
+Added Pin To Net: NetName=FMC_A8 Pin=U?-54
+Added Pin To Net: NetName=FMC_A9 Pin=U?-55
+Added Pin To Net: NetName=FMC_A10 Pin=U?-56
+Added Pin To Net: NetName=FMC_A11 Pin=U?-57
+Added Pin To Net: NetName=FMC_D4 Pin=U?-58
+Added Pin To Net: NetName=FMC_D5 Pin=U?-59
+Added Pin To Net: NetName=FMC_D6 Pin=U?-60
+Added Pin To Net: NetName=GND_IN Pin=U?-61
+Added Pin To Net: NetName=VDD Pin=U?-62
+Added Pin To Net: NetName=FMC_D7 Pin=U?-63
+Added Pin To Net: NetName=LTDC_G3 Pin=U?-64
+Added Pin To Net: NetName=LTDC_B4 Pin=U?-65
+Added Pin To Net: NetName=LTDC_DE Pin=U?-66
+Added Pin To Net: NetName=LTDC_CLK Pin=U?-67
+Added Pin To Net: NetName=LTDC_R7 Pin=U?-68
+Added Pin To Net: NetName=LTDC_G4 Pin=U?-69
+Added Pin To Net: NetName=LTDC_G5 Pin=U?-70
+Added Pin To Net: NetName=VDD Pin=U?-72
+Added Pin To Net: NetName=SPI2_SCK Pin=U?-74
+Added Pin To Net: NetName=LTDC_B3 Pin=U?-79
+Added Pin To Net: NetName=GND_IN Pin=U?-83
+Added Pin To Net: NetName=VDD Pin=U?-84
+Added Pin To Net: NetName=FMC_D0 Pin=U?-85
+Added Pin To Net: NetName=FMC_D1 Pin=U?-86
+Added Pin To Net: NetName=FMC_A12 Pin=U?-87
+Added Pin To Net: NetName=FMC_BA0 Pin=U?-89
+Added Pin To Net: NetName=FMC_BA1 Pin=U?-90
+Added Pin To Net: NetName=FMC_SDCLK Pin=U?-93
+Added Pin To Net: NetName=GND_IN Pin=U?-94
+Added Pin To Net: NetName=VDD Pin=U?-95
+Added Pin To Net: NetName=LTDC_HSYNC Pin=U?-96
+Added Pin To Net: NetName=LTDC_G6 Pin=U?-97
+Added Pin To Net: NetName=SDMMC1_D0 Pin=U?-98
+Added Pin To Net: NetName=SDMMC1_D1 Pin=U?-99
+Added Pin To Net: NetName=USB_OTG_FS_ID Pin=U?-102
+Added Pin To Net: NetName=USB_OTG_FS_DM Pin=U?-103
+Added Pin To Net: NetName=USB_OTG_FS_DP Pin=U?-104
+Added Pin To Net: NetName=GND_IN Pin=U?-107
+Added Pin To Net: NetName=VDD Pin=U?-108
+Added Pin To Net: NetName=SDMMC1_D2 Pin=U?-111
+Added Pin To Net: NetName=SDMMC1_D3 Pin=U?-112
+Added Pin To Net: NetName=SDMMC1_CK Pin=U?-113
+Added Pin To Net: NetName=FMC_D2 Pin=U?-114
+Added Pin To Net: NetName=FMC_D3 Pin=U?-115
+Added Pin To Net: NetName=SDMMC1_CMD Pin=U?-116
+Added Pin To Net: NetName=LTDC_G7 Pin=U?-117
+Added Pin To Net: NetName=USART2_RTS Pin=U?-118
+Added Pin To Net: NetName=USART2_TX Pin=U?-119
+Added Pin To Net: NetName=GND_IN Pin=U?-120
+Added Pin To Net: NetName=VDD Pin=U?-121
+Added Pin To Net: NetName=USART2_RX Pin=U?-122
+Added Pin To Net: NetName=LTDC_B2 Pin=U?-125
+Added Pin To Net: NetName=LTDC_B1 Pin=U?-127
+Added Pin To Net: NetName=LTDC_R0 Pin=U?-128
+Added Pin To Net: NetName=LTDC_B0 Pin=U?-129
+Added Pin To Net: NetName=GND_IN Pin=U?-130
+Added Pin To Net: NetName=VDD Pin=U?-131
+Added Pin To Net: NetName=FMC_SDNCAS Pin=U?-132
+Added Pin To Net: NetName=GND_IN Pin=U?-138
+Added Pin To Net: NetName=LTDC_B6 Pin=U?-139
+Added Pin To Net: NetName=LTDC_B7 Pin=U?-140
+Added Pin To Net: NetName=VDD Pin=U?-143
+Added Pin To Net: NetName=VDD Pin=U?-144
+Add Net: Net with name "NetC?_1" already exists
+Add Net: Net with name "NetC?_1" already exists
+Add Net: Net with name "NetC?_1" already exists
+Add Net: Net with name "NetC?_1" already exists
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetD?_1" already exists
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? =Value
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 4u7F
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 2u2F
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 2u2F
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=MCU Member=Component C? 100nF
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? 2u2F
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? 2u2F
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? 10uF/ALM/35V
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? 100uF/ALM/35V
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component C? 100uF/TANT/35V
+Added Member To Class: ClassName=System_Power Member=Component C? =Value
+Added Member To Class: ClassName=System_Power Member=Component D? =VALUE
+Added Member To Class: ClassName=System_Power Member=Component D? =Value
+Added Member To Class: ClassName=System_Power Member=Component D? SMAJ12CA
+Added Member To Class: ClassName=System_Power Member=Component D? SMAJ4744A-TP
+Added Member To Class: ClassName=System_Power Member=Component D? SCHOTKY DIODE
+Added Member To Class: ClassName=System_Power Member=Component D? DESD5V0S1BA-7
+Added Member To Class: ClassName=System_Power Member=Component D? CDSOD323-T03
+Added Member To Class: ClassName=System_Power Member=Component D? DESD5V0S1BA-7
+Added Member To Class: ClassName=MCU Member=Component FB? =Value
+Added Member To Class: ClassName=System_Power Member=Component FB? 1kOhm@100MHz
+Added Member To Class: ClassName=System_Power Member=Component IC? DMPH6050SK3
+Added Member To Class: ClassName=System_Power Member=Component IC? TPS5420xx
+Added Member To Class: ClassName=System_Power Member=Component J? Barrel Jack
+Add Class Member: Failed to add class member : Component L? 220R
+Add Class Member: Failed to add class member : Component L? 27uH
+Add Class Member: Failed to add class member : Component L? =Value
+Added Member To Class: ClassName=System_Power Member=Component R? 5K/206/0.5W
+Added Member To Class: ClassName=System_Power Member=Component R? 100K/1206/0.5W
+Added Member To Class: ClassName=System_Power Member=Component R? 3K24/1206/0.5W
+Added Member To Class: ClassName=System_Power Member=Component R? 600R/1206/0.5W
+Added Member To Class: ClassName=System_Power Member=Component R? 10K/1206/0.5W
+Add Class Member: Failed to add class member : Component SW? =Value
+Add Class Member: Failed to add class member : Component TP? Test Point
+Add Class Member: Failed to add class member : Component TP? Test Point
+Add Class Member: Failed to add class member : Component TP? Test Point
+Added Member To Class: ClassName=MCU Member=Component U? STM32F746ZGT6G
+Added Member To Class: ClassName=MCU Member=Component U? STM32F746ZGT6G
+Added Member To Class: ClassName=System_Power Member=Component U? =Value
