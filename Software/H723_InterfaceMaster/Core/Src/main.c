@@ -18,21 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "fdcan.h"
-#include "i2c.h"
-#include "ltdc.h"
-#include "rtc.h"
-#include "sdmmc.h"
-#include "spi.h"
-#include "tim.h"
-#include "usart.h"
-#include "usb_device.h"
-#include "gpio.h"
-#include "fmc.h"
-#include "usb_host.h"
+
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "tasks.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -99,25 +89,9 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_FDCAN1_Init();
-  MX_FMC_Init();
-  MX_I2C1_Init();
-  MX_I2C4_Init();
-  MX_LTDC_Init();
-  MX_RTC_Init();
-  MX_SDMMC2_SD_Init();
-  MX_SPI2_Init();
-  MX_UART7_Init();
-  MX_USART2_UART_Init();
-  MX_SPI1_Init();
-  MX_TIM1_Init();
-  MX_TIM3_Init();
-  MX_USB_DEVICE_Init();
-//  MX_USB_DEVICE_Init();
-//  MX_USB_HOST_Init();
-  /* USER CODE BEGIN 2 */
 
+  /* USER CODE BEGIN 2 */
+  IM_peripheral_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
