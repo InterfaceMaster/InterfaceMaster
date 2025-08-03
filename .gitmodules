@@ -1,0 +1,3 @@
+[submodule "Software/H723_InterfaceMaster/Librarys/lvgl"]
+	path = Software/H723_InterfaceMaster/Librarys/lvgl
+	url = https://github.com/lvgl/lvgl.git
