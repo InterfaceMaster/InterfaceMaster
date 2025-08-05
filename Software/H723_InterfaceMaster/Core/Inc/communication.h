@@ -29,7 +29,12 @@ typedef enum {
 
 typedef struct {
   CommProtocolType_e comm_protocol_type;
-
+  uint8_t *p_tx_buff;
+  uint8_t *p_rx_buff;
+  uint8_t u8_tx_size;
+  uint8_t u8_rx_size;
+  uint8_t u8_tx_complete;
+  uint8_t u8_rx_complete;
 } CommProtocol_t;
 
 #endif /* INC_COMMUNICATION_H_ */
