@@ -44,13 +44,13 @@ static void s_usb_task_CB(void);
 
 typedef struct {
   void (*pTask_CB)(void);
-  uint16_t u32_start_time;
-  uint16_t u32_last_run_time;
-  uint16_t u32_elapsed_time;
+  uint32_t u32_start_time;
+  uint32_t u32_last_run_time;
+  uint32_t u32_elapsed_time;
   uint32_t u32_period;
   uint8_t u8_fired;
 
-} TaskConfig_t __attribute__((aligned(32U)));
+} TaskConfig_t;
 
 /**
  * @brief  This structure holds the entire system status information and
@@ -81,6 +81,12 @@ static uint8_t s_u8_usb_task_period_ms = 10U;
 
   */
 
+/** @brief This function is USB task
+ *@param None
+ *@retVal None
+ * */
+static void s_usb_task_CB(void) { USB_send_data(p_comm_procotol); }
+
 /**
  * @brief  This function initializes the MCU USB Device or USB Host based on ID
  * 		   pin.
@@ -88,7 +94,7 @@ static uint8_t s_u8_usb_task_period_ms = 10U;
  * @retval None.
  */
 
-static void usb_init(void) {
+static void USB_init(void) {
   USB_InitType_e usb_init_type = get_usb_ID_state();
 
   switch (usb_init_type) {
@@ -136,7 +142,7 @@ void IM_peripheral_init(void) {
   MX_TIM3_Init();
   MX_USB_DEVICE_Init();
   MX_TIM2_Init();
-  usb_init();
+  USB_init();
 }
 
 /**
