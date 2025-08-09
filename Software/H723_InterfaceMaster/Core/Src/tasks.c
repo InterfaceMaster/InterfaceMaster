@@ -11,6 +11,7 @@
 #include "communication.h"
 #include "tasks.h"
 
+#include "dma.h"
 #include "fdcan.h"
 #include "fmc.h"
 #include "gpio.h"
@@ -85,7 +86,7 @@ static uint8_t s_u8_usb_task_period_ms = 10U;
  *@param None
  *@retVal None
  * */
-static void s_usb_task_CB(void) { USB_send_data(p_comm_procotol); }
+static void s_usb_task_CB(void) { USB_send_data(); }
 
 /**
  * @brief  This function initializes the MCU USB Device or USB Host based on ID
@@ -127,6 +128,7 @@ static void USB_init(void) {
  */
 void IM_peripheral_init(void) {
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_FDCAN1_Init();
   MX_FMC_Init();
   MX_I2C1_Init();
@@ -153,7 +155,7 @@ void IM_peripheral_init(void) {
 void IM_task_init(void) {
 
   s_usb_task_config.pTask_CB = &s_usb_task_CB;
-  s_usb_task_config.u8_period = s_u8_usb_task_period_ms;
+  s_usb_task_config.u32_period = s_u8_usb_task_period_ms;
   s_usb_task_config.u8_fired = 1U;
 };
 
