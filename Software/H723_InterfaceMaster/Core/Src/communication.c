@@ -13,6 +13,7 @@
  */
 #include "communication.h"
 #include <stdint.h>
+#include <string.h>
 
 #include "usb_host.h"
 #include "usbd_cdc_if.h"
@@ -57,10 +58,12 @@ void set_comm_protocol_tx_buff(uint8_t *p_buff) {
 void set_comm_protocol_rx_buff(uint8_t *p_buff) {
   if (0U == comm_protocol_system.u8_active_rx_buff) {
     ++comm_protocol_system.u8_active_rx_buff;
-    comm_protocol_system.p_rx_buff_0 = p_buff;
+    memset(comm_protocol_system.p_rx_buff_0, '\0', MAX_COMM_PROTOCOL_SIZE);
+    memcpy(comm_protocol_system.p_rx_buff_0, p_buff, MAX_COMM_PROTOCOL_SIZE);
   } else if (1U == comm_protocol_system.u8_active_rx_buff) {
     comm_protocol_system.u8_active_rx_buff = 0U;
-    comm_protocol_system.p_rx_buff_1 = p_buff;
+    memset(comm_protocol_system.p_rx_buff_0, '\0', MAX_COMM_PROTOCOL_SIZE);
+    memcpy(comm_protocol_system.p_rx_buff_1, p_buff, MAX_COMM_PROTOCOL_SIZE);
   }
 }
 
@@ -80,8 +83,8 @@ void set_comm_protocol_type(CommProtocolType_e comm_protocol_type) {
  * @param Amaount of Rx data.
  * @retVal None.
  */
-void set_comm_protocol_rx_size(uint8_t amaount) {
-  comm_protocol_system.u8_rx_size = amaount;
+void set_comm_protocol_rx_size(uint8_t size) {
+  comm_protocol_system.u8_rx_size = size;
 }
 
 /**
@@ -90,8 +93,8 @@ void set_comm_protocol_rx_size(uint8_t amaount) {
  * @param Amaount of Tx data.
  * @retVal None.
  */
-void set_comm_protocol_tx_size(uint8_t amaount) {
-  comm_protocol_system.u8_tx_size = amaount;
+void set_comm_protocol_tx_size(uint8_t size) {
+  comm_protocol_system.u8_tx_size = size;
 }
 
 /**
