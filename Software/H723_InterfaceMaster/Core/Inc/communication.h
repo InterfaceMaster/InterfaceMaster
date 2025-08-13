@@ -65,6 +65,17 @@ typedef enum {
 } CommProtocolStatus_e;
 
 /**
+ * @brief This enumeration defines active communication buffer.
+ * @attention Any modification to this structure requires analysis the entire
+ * system.
+ */
+
+typedef enum {
+  COMM_ACTIVE_BUFF_0 = 0U,
+  COMM_ACTIVE_BUFF_1 = 1U,
+} CommProtocolActiveBuff_e;
+
+/**
  * @brief This structure defines communication protocol.
  * @attention Any modification to this structure requires analysis the entire
  * system.
@@ -72,12 +83,12 @@ typedef enum {
 
 typedef struct {
   CommProtocolType_e type;
+  CommProtocolActiveBuff_e active_buff;
   uint8_t *p_tx_buff;
   uint8_t *p_rx_buff_0;
   uint8_t *p_rx_buff_1;
   uint8_t u8_tx_size;
   uint8_t u8_rx_size;
-  uint8_t u8_active_rx_buff;
   CommProtocolStatus_e tx_status;
   CommProtocolStatus_e rx_status;
 } CommProtocol_t;
@@ -85,10 +96,14 @@ typedef struct {
 CommProtocolType_e get_comm_protocol_type(void);
 uint8_t *get_comm_protocol_rx_buff(void);
 uint8_t *get_comm_protocol_tx_buff(void);
+uint8_t get_comm_protocol_rx_size(void);
+uint8_t get_comm_protocol_tx_size(void);
 
 void set_comm_protocol_type(CommProtocolType_e comm_protocol_type);
 void set_comm_protocol_rx_buff(uint8_t *p_buff);
 void set_comm_protocol_tx_buff(uint8_t *p_buff);
+void set_comm_protocol_rx_size(uint8_t size);
+void set_comm_protocol_tx_size(uint8_t size);
 
 void USB_send_data(void);
 

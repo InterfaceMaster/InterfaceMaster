@@ -56,12 +56,12 @@ void set_comm_protocol_tx_buff(uint8_t *p_buff) {
  * @retVal None.
  */
 void set_comm_protocol_rx_buff(uint8_t *p_buff) {
-  if (0U == comm_protocol_system.u8_active_rx_buff) {
-    ++comm_protocol_system.u8_active_rx_buff;
+  if (COMM_ACTIVE_BUFF_0 == comm_protocol_system.active_buff) {
+    comm_protocol_system.active_buff = COMM_ACTIVE_BUFF_1;
     memset(comm_protocol_system.p_rx_buff_0, '\0', MAX_COMM_PROTOCOL_SIZE);
     memcpy(comm_protocol_system.p_rx_buff_0, p_buff, MAX_COMM_PROTOCOL_SIZE);
-  } else if (1U == comm_protocol_system.u8_active_rx_buff) {
-    comm_protocol_system.u8_active_rx_buff = 0U;
+  } else if (COMM_ACTIVE_BUFF_1 == comm_protocol_system.active_buff) {
+    comm_protocol_system.active_buff = COMM_ACTIVE_BUFF_0;
     memset(comm_protocol_system.p_rx_buff_0, '\0', MAX_COMM_PROTOCOL_SIZE);
     memcpy(comm_protocol_system.p_rx_buff_1, p_buff, MAX_COMM_PROTOCOL_SIZE);
   }
@@ -115,9 +115,9 @@ uint8_t *get_comm_protocol_tx_buff(void) {
  */
 uint8_t *get_comm_protocol_rx_buff(void) {
 
-  if (0U == comm_protocol_system.u8_active_rx_buff) {
+  if (COMM_ACTIVE_BUFF_0 == comm_protocol_system.active_buff) {
     return comm_protocol_system.p_rx_buff_0;
-  } else if (1U == comm_protocol_system.u8_active_rx_buff) {
+  } else if (COMM_ACTIVE_BUFF_1 == comm_protocol_system.active_buff) {
     return comm_protocol_system.p_rx_buff_1;
   }
   return 0U; /*TODO: add logs for hardfault*/

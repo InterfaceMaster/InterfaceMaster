@@ -22,6 +22,7 @@
 
 /* USER CODE BEGIN 0 */
 #include "communication.h"
+#include <string.h>
 
 static uint8_t data_buff[MAX_COMM_PROTOCOL_SIZE] = {'\0'};
 
@@ -238,5 +239,9 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef *i2cHandle) {
 }
 
 /* USER CODE BEGIN 1 */
-void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c) {}
+void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c) {
+
+  set_comm_protocol_rx_buff(data_buff);
+  memset(data_buff, '\0', MAX_COMM_PROTOCOL_SIZE);
+}
 /* USER CODE END 1 */

@@ -14,10 +14,10 @@
 
 #include <stdint.h>
 
+#include "adc.h"
+#include "bdma.h"
 #include "board_options.h"
 #include "communication.h"
-#include "tasks.h"
-
 #include "dma.h"
 #include "fdcan.h"
 #include "fmc.h"
@@ -28,6 +28,7 @@
 #include "rtc.h"
 #include "sdmmc.h"
 #include "spi.h"
+#include "tasks.h"
 #include "tim.h"
 #include "usart.h"
 #include "usb_device.h"
@@ -136,6 +137,9 @@ static void USB_init(void) {
 void IM_peripheral_init(void) {
   MX_GPIO_Init();
   MX_DMA_Init();
+  MX_BDMA_Init();
+  MX_ADC3_Init();
+  MX_UART5_Init();
   MX_FDCAN1_Init();
   MX_FMC_Init();
   MX_I2C1_Init();
@@ -149,7 +153,6 @@ void IM_peripheral_init(void) {
   MX_SPI1_Init();
   MX_TIM1_Init();
   MX_TIM3_Init();
-  MX_USB_DEVICE_Init();
   MX_TIM2_Init();
   USB_init();
 }
