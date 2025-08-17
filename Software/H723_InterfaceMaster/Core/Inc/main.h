@@ -61,6 +61,8 @@ void Error_Handler(void);
 #define SPI1_NOR_CS_GPIO_Port GPIOE
 #define SPI2_CS_Pin GPIO_PIN_3
 #define SPI2_CS_GPIO_Port GPIOE
+#define SDMMC2_CARD_DET_Pin GPIO_PIN_13
+#define SDMMC2_CARD_DET_GPIO_Port GPIOC
 #define SPI1_PSRAM_CS_Pin GPIO_PIN_3
 #define SPI1_PSRAM_CS_GPIO_Port GPIOG
 #define BACKLIGHT_PWM_Pin GPIO_PIN_8
