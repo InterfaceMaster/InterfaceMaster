@@ -15,7 +15,7 @@ MEMORY
    * This is based on the table you provided.
    * rwx: read, write, execute - indicates the memory is both readable and writable.
    */
-  SDRAM (rwx) : ORIGIN = 0xCC000000, LENGTH = 2M
+  SDRAM (rw) : ORIGIN = 0xCC000000, LENGTH = 2M
 }
 
 /*

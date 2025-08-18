@@ -34,6 +34,8 @@
 #include "usb_device.h"
 #include "usb_host.h"
 
+#include "lvgl.h"
+
 /*
   ==============================================================================
                       ##### STATIC FUNCTION PROTOTYPE #####
@@ -174,7 +176,6 @@ void IM_task_init(void) {
  * @param None.
  * @retval None.
  */
-
 void run_tasks(void) {
 
   uint32_t u32_current_time = HAL_GetTick();
@@ -186,5 +187,11 @@ void run_tasks(void) {
     s_usb_task_config.pTask_CB();
     s_usb_task_config.u32_elapsed_time =
         HAL_GetTick() - s_usb_task_config.u32_start_time;
+  }
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+  if (htim->Instance == TIM2) {
+    lv_tick_inc(10U);
   }
 }
