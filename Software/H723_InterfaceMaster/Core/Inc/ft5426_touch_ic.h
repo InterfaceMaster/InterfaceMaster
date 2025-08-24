@@ -7,6 +7,7 @@
 
 #ifndef INC_FT5426_TOUCH_IC_H_
 #define INC_FT5426_TOUCH_IC_H_
+#include <stdint.h>
 
 typedef enum {
   FT5426_PRESS_DOWN = 0U,
