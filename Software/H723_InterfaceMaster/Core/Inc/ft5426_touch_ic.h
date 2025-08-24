@@ -23,4 +23,6 @@ typedef struct {
 
 void ft5426_init(void);
 
+void ft5426_get_touch_data(FT5426_TouchData_t *touch_data);
+
 #endif /* INC_FT5426_TOUCH_IC_H_ */

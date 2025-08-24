@@ -13,10 +13,6 @@
 
 #define WORKING_MODE_REG 0X00U
 #define NUMBER_OF_TOUCH_POINT 0x02
-#define TOCUH_X_HIGH_REG 0x03U
-#define TOUCH_X_LOW_REG 0x04U
-#define TOUCH_Y_HIGH_REG 0x05U
-#define TOUCH_Y_LOW_REG 0x06U
 
 #define FT5426_EVENT_FLAG_MASK 0XC0U
 
@@ -29,7 +25,8 @@
 /**
  *  @brief This function reads data from given memory address.
  * @param reg_addr is the register address to data read from.
- * @param data address of the buffer where the data writing to.
+ * @param data_buff address of the buffer where the data writing to.
+ * @param data_size amaount of the read data.
  * @retval None.
  */
 
@@ -74,12 +71,14 @@ static void ft5426_set_working_mode(void) {
   */
 
 /**
- * @brief This function gets the point location.
- * @param None.
+ * @brief Reads touch point coordinates and event from the FT5426 controller.
+ * @param  touch_data Pointer to the struct where the touch data will be stored.
  * @retval None.
+ * @note   This function reads a 5-byte burst from the FT5426. The data contains
+ * the touch status and the X and Y coordinates of the first touch point.
  */
 
-void ft5426_get_touch_point(FT5426_TouchData_t *touch_data) {
+void ft5426_get_touch_data(FT5426_TouchData_t *touch_data) {
   uint8_t touch_points = 0U;
   uint8_t data_buff[5U];
   uint8_t data_size = sizeof(data_buff) / sizeof(data_buff[0U]);
