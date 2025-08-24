@@ -7,6 +7,7 @@
 
 #include "lvgl.h"
 
+#include "ft5426_touch_ic.h"
 #include "main.h"
 #include "stdint.h"
 
@@ -34,9 +35,41 @@ static uint8_t draw_buff_1[BUFF_SIZE] __attribute__((section(".sdram_data")));
  * @param area The area that has been invalidated and needs to be redrawn.
  * @param color_p A pointer to the pixel data to be drawn.
  */
-void display_flush_cb(lv_display_t *disp, const lv_area_t *area,
-                      lv_color_t *color_p) {
+static void display_flush_cb(lv_display_t *disp, const lv_area_t *area,
+                             lv_color_t *color_p) {
   lv_display_flush_ready(disp);
+}
+
+/**
+ * @brief This function gets the current touch point on the screen
+ * @param input_device pointer of input_device handler.
+ * @param data pinter of input device data.
+ * @retval None.
+ */
+
+static void touchpad_read_cb(lv_indev_t *input_device, lv_indev_data_t *data) {
+  FT5426_TouchData_t touch_data = {0U};
+  ft5426_get_touch_data(&touch_data);
+  data->point.x = (uint32_t)touch_data.x_cord;
+  data->point.y = (uint32_t)touch_data.y_cord;
+  if (FT5426_NO_EVENT != touch_data.ft5426_event) {
+    data->state = LV_INDEV_STATE_PRESSED;
+  } else {
+    data->state = LV_INDEV_STATE_RELEASED;
+  }
+}
+
+/**
+ * @brief This function initialize the touch for lvgl.
+ * @param None.
+ * @retval None.
+ *
+ */
+
+static void touch_init(void) {
+  lv_indev_t *input_device = lv_indev_create();
+  lv_indev_set_type(input_device, LV_INDEV_TYPE_POINTER);
+  lv_indev_set_read_cb(input_device, touchpad_read_cb);
 }
 
 /*
@@ -57,4 +90,5 @@ void tft_init(void) {
   lv_display_set_flush_cb(display, display_flush_cb);
   lv_display_set_buffers(display, draw_buff_0, draw_buff_1, sizeof(draw_buff_0),
                          LV_DISPLAY_RENDER_MODE_PARTIAL);
+  touch_init();
 }
