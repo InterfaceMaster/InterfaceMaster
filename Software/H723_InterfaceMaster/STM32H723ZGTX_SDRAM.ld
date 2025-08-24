@@ -27,13 +27,16 @@ MEMORY
 SECTIONS
 {
   /* The .sdram_data section holds user-defined data placed in SDRAM. */
-  .sdram_data :
+  .sdram_data (NOLOAD) :
   {
     /* Align the data to a 4-byte (32-bit) boundary. */
     . = ALIGN(4);
 
     /* This symbol marks the start address of the .sdram_data section. */
     _sdsram_start = .;
+
+  KEEP(*(.sdram_data))
+  KEEP(*(.sdram_data.*))
 
   /* Any variables assigned the section(".sdram_data") attribute will be placed here. */
   
@@ -42,5 +45,5 @@ SECTIONS
 
   /* ">SDRAM AT>SDRAM" indicates that the data in this section should be
    * placed in the "SDRAM" memory region. */
-  } >SDRAM AT>SDRAM
+  } >SDRAM 
 }
