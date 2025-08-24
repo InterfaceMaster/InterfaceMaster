@@ -59,7 +59,6 @@ typedef struct {
   uint32_t u32_last_run_time;
   uint32_t u32_elapsed_time;
   uint32_t u32_period;
-  uint8_t u8_fired;
 
 } TaskConfig_t;
 
@@ -82,8 +81,9 @@ typedef struct {
   ==============================================================================
 
   */
-static TaskConfig_t s_usb_task_config;
+static TaskConfig_t s_tasks_config[2U];
 static uint8_t s_u8_usb_task_period_ms = 10U;
+static uint8_t s_u8_gui_task_period_ms = 100U;
 
 /*
   ==============================================================================
@@ -92,10 +92,19 @@ static uint8_t s_u8_usb_task_period_ms = 10U;
 
   */
 
-/** @brief This function is USB task
- *@param None
- *@retVal None
- * */
+/**
+ *@brief This function is UI task callback.
+ *@param None.
+ *@retVal None.
+ */
+
+static void s_gui_task_CB(void) {}
+
+/**
+ *@brief This function is USB task callback.
+ *@param None.
+ *@retVal None.
+ */
 static void s_usb_task_CB(void) { USB_send_data(); }
 
 /**
@@ -155,8 +164,11 @@ void IM_peripheral_init(void) {
   MX_SPI1_Init();
   MX_TIM3_Init();
   MX_TIM2_Init();
+
   USB_init();
+
   ft5426_init();
+  tft_init();
 }
 
 /**
@@ -174,9 +186,11 @@ void IM_library_init(void) { lv_init(); }
  */
 void IM_task_init(void) {
 
-  s_usb_task_config.pTask_CB = &s_usb_task_CB;
-  s_usb_task_config.u32_period = s_u8_usb_task_period_ms;
-  s_usb_task_config.u8_fired = 1U;
+  s_tasks_config[0U].pTask_CB = &s_usb_task_CB;
+  s_tasks_config[0U].u32_period = s_u8_usb_task_period_ms;
+
+  s_tasks_config[1U].pTask_CB = &s_gui_task_CB;
+  s_tasks_config[1U].u32_period = s_u8_gui_task_period_ms;
 };
 
 /**
@@ -187,14 +201,17 @@ void IM_task_init(void) {
 void run_tasks(void) {
 
   uint32_t u32_current_time = HAL_GetTick();
+  uint8_t task_amaount = sizeof(s_tasks_config) / sizeof(s_tasks_config[0U]);
 
-  if (u32_current_time - s_usb_task_config.u32_last_run_time >
-      s_usb_task_config.u32_period) {
-    s_usb_task_config.u32_last_run_time = u32_current_time;
-    s_usb_task_config.u32_start_time = HAL_GetTick();
-    s_usb_task_config.pTask_CB();
-    s_usb_task_config.u32_elapsed_time =
-        HAL_GetTick() - s_usb_task_config.u32_start_time;
+  for (uint8_t i = 0U; i < task_amaount; ++i) {
+    if (u32_current_time - s_tasks_config[i].u32_last_run_time >
+        s_tasks_config[i].u32_period) {
+      s_tasks_config[i].u32_last_run_time = u32_current_time;
+      s_tasks_config[i].u32_start_time = HAL_GetTick();
+      s_tasks_config[i].pTask_CB();
+      s_tasks_config[i].u32_elapsed_time =
+          HAL_GetTick() - s_tasks_config[i].u32_start_time;
+    }
   }
 }
 
