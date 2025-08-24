@@ -16,5 +16,6 @@
 #define INC_TASKS_H_
 
 void IM_peripheral_init(void);
+void IM_library_init(void);
 
 #endif /* INC_TASKS_H_ */

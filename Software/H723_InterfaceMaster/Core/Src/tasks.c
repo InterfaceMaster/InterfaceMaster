@@ -34,8 +34,8 @@
 #include "usb_device.h"
 #include "usb_host.h"
 
+#include "ft5426_touch_ic.h"
 #include "lvgl.h"
-
 /*
   ==============================================================================
                       ##### STATIC FUNCTION PROTOTYPE #####
@@ -153,11 +153,19 @@ void IM_peripheral_init(void) {
   MX_UART7_Init();
   MX_USART2_UART_Init();
   MX_SPI1_Init();
-  MX_TIM1_Init();
   MX_TIM3_Init();
   MX_TIM2_Init();
   USB_init();
+  ft5426_init();
 }
+
+/**
+ * @bried Initialize the system librarys.
+ * @param None.
+ * @retval None.
+ * */
+
+void IM_library_init(void) { lv_init(); }
 
 /**
  * @brief Initializes the system task configurations.
