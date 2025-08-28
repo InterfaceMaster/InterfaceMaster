@@ -11,13 +11,14 @@
 #include "main.h"
 #include "stdint.h"
 
+#define LCD_FRAME_BUFFER_ADDRESS 0xCC000000
+
 #define DISPLAY_WIDTH 480U
 #define DISPLAY_HEIGHT 272U
 #define BYTES_PER_PIXEL (LV_COLOR_FORMAT_GET_SIZE(LV_COLOR_FORMAT_RGB888))
-#define BUFF_SIZE (DISPLAY_WIDTH * 10 * BYTES_PER_PIXEL)
+#define BUFF_SIZE (DISPLAY_WIDTH * DISPLAY_HEIGHT * BYTES_PER_PIXEL)
 
 uint8_t draw_buff_0[BUFF_SIZE] __attribute__((used, section(".sdram_data")));
-uint8_t draw_buff_1[BUFF_SIZE] __attribute__((used, section(".sdram_data")));
 
 /*
   ==============================================================================
@@ -37,6 +38,16 @@ uint8_t draw_buff_1[BUFF_SIZE] __attribute__((used, section(".sdram_data")));
  */
 static void display_flush_cb(lv_display_t *disp, const lv_area_t *area,
                              lv_color_t *color_p) {
+  int32_t x1 = area->x1;
+  int32_t y1 = area->y1;
+  int32_t w = lv_area_get_width(area);
+  int32_t h = lv_area_get_height(area);
+
+  uint32_t dest_address =
+      LCD_FRAME_BUFFER_ADDRESS + (y1 * DISPLAY_WIDTH + x1) * BYTES_PER_PIXEL;
+
+  memcpy((void *)dest_address, color_p, w * h * BYTES_PER_PIXEL);
+
   lv_display_flush_ready(disp);
 }
 
@@ -87,7 +98,7 @@ static void touch_init(void) {
 void tft_init(void) {
   lv_display_t *display = lv_display_create(DISPLAY_WIDTH, DISPLAY_HEIGHT);
   lv_display_set_flush_cb(display, (lv_display_flush_cb_t)display_flush_cb);
-  lv_display_set_buffers(display, draw_buff_0, draw_buff_1, sizeof(draw_buff_0),
-                         LV_DISPLAY_RENDER_MODE_PARTIAL);
+  lv_display_set_buffers(display, draw_buff_0, NULL, sizeof(draw_buff_0),
+                         LV_DISPLAY_RENDER_MODE_FULL);
   touch_init();
 }
