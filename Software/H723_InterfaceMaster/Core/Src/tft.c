@@ -38,15 +38,6 @@ uint8_t draw_buff_0[BUFF_SIZE] __attribute__((used, section(".sdram_data")));
  */
 static void display_flush_cb(lv_display_t *disp, const lv_area_t *area,
                              lv_color_t *color_p) {
-  int32_t x1 = area->x1;
-  int32_t y1 = area->y1;
-  int32_t w = lv_area_get_width(area);
-  int32_t h = lv_area_get_height(area);
-
-  uint32_t dest_address =
-      LCD_FRAME_BUFFER_ADDRESS + (y1 * DISPLAY_WIDTH + x1) * BYTES_PER_PIXEL;
-
-  memcpy((void *)dest_address, color_p, w * h * BYTES_PER_PIXEL);
 
   lv_display_flush_ready(disp);
 }
@@ -96,6 +87,7 @@ static void touch_init(void) {
  * @retval None.
  * */
 void tft_init(void) {
+  HAL_LTDC_SetAddress(&hltdc, (uint32_t)draw_buff_0, 0);
   lv_display_t *display = lv_display_create(DISPLAY_WIDTH, DISPLAY_HEIGHT);
   lv_display_set_flush_cb(display, (lv_display_flush_cb_t)display_flush_cb);
   lv_display_set_buffers(display, draw_buff_0, NULL, sizeof(draw_buff_0),
