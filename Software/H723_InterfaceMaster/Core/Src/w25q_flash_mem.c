@@ -240,7 +240,7 @@ W25Q_State_e w25q_sector_erase(const uint32_t address) {
 
 W25Q_State_e w25q_read_data(const uint32_t address, const uint16_t size,
                             uint8_t *p_data_buff) {
-  W25Q_State_e status = HAL_OK;
+  HAL_StatusTypeDef status = HAL_OK;
 
   uint8_t dummy_rx_buff[4U] = {0U};
   uint8_t tx_buff[4U] = {0U};
@@ -252,8 +252,8 @@ W25Q_State_e w25q_read_data(const uint32_t address, const uint16_t size,
 
   IM_spi1_cs_state(SLAVE_ENABLE);
 
-  status = HAL_SPI_Transmit(&hspi1, &tx_buff[0U], &dummy_rx_buff[0U],
-                            sizeof(tx_buff), HAL_MAX_DELAY);
+  status =
+      HAL_SPI_Transmit(&hspi1, &tx_buff[0U], sizeof(tx_buff), HAL_MAX_DELAY);
   if (HAL_OK != status) {
     return W25Q_ERROR;
   }
