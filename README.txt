@@ -8,7 +8,7 @@ This device offers a flexible solution designed for data acquisition, monitoring
 * **Communication Ports:** Physical communication interfaces for UART, SPI, FDCAN, I2C, RS232, and RS485 located on the device.
 * **Internal Memory:** Integrated flash memory or SDRAM/PSRAM for data logging.
 * **External Storage:** USB Type-A port and an SDMMC card slot.
-* **Visual Interface:** Integrated 480x282 resolution screen for real-time data tracking.
+* **Visual Interface:** Integrated 480x272 resolution screen for real-time data tracking.
 
 #### Key Features
 * **Extensive Communication Support:** The ability to acquire and bridge data through UART, SPI, FDCAN, I2C, RS232, and RS485 interfaces.
