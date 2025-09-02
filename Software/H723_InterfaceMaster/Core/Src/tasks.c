@@ -36,6 +36,7 @@
 
 #include "ft5426_touch_ic.h"
 #include "lvgl.h"
+#include "tft.h"
 /*
   ==============================================================================
                       ##### STATIC FUNCTION PROTOTYPE #####
@@ -98,7 +99,7 @@ static uint8_t s_u8_gui_task_period_ms = 100U;
  *@retVal None.
  */
 
-static void s_gui_task_CB(void) {}
+static void s_gui_task_CB(void) { lv_task_handler(); }
 
 /**
  *@brief This function is USB task callback.

@@ -8,6 +8,7 @@
 #include "lvgl.h"
 
 #include "ft5426_touch_ic.h"
+#include "ltdc.h"
 #include "main.h"
 #include "stdint.h"
 
