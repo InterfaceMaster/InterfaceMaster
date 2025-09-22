@@ -1,3 +1,7 @@
 [submodule "Software/H723_InterfaceMaster/Librarys/lvgl"]
 	path = Software/H723_InterfaceMaster/Librarys/lvgl
 	url = https://github.com/lvgl/lvgl.git
+
+[submodule "Software/H723_InterfaceMaster/Librarys/littlefs"]
+	path = Software/H723_InterfaceMaster/Librarys/littlefs
+	url = https://github.com/littlefs-project/littlefs.git
