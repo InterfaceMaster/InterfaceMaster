@@ -13,7 +13,7 @@
 #include "spi.h"
 #include <stdint.h>
 
-#define BUSY_TIMEOUT_MS 1U
+#define W25Q_BUSY_TIMEOUT_MS 1U
 #define W25Q_SPI_CH 1U
 
 #define WRITE_ENABLE 0x06U
@@ -171,7 +171,7 @@ W25Q_State_e w25q_page_program(const uint32_t address, const uint8_t size,
     if (HAL_OK != status) {
       return W25Q_ERROR;
     }
-    if ((HAL_GetTick() - start_time) > BUSY_TIMEOUT_MS) {
+    if ((HAL_GetTick() - start_time) > W25Q_BUSY_TIMEOUT_MS) {
       return W25Q_TIMEOUT;
     }
 
@@ -222,7 +222,7 @@ W25Q_State_e w25q_sector_erase(const uint32_t address) {
     if (HAL_OK != status) {
       return W25Q_ERROR;
     }
-    if ((HAL_GetTick() - start_time) > BUSY_TIMEOUT_MS) {
+    if ((HAL_GetTick() - start_time) > W25Q_BUSY_TIMEOUT_MS) {
       return W25Q_TIMEOUT;
     }
   } while (1U == busy_bit_status);

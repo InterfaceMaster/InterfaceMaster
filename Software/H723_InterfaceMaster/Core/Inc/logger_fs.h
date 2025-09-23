@@ -1,0 +1,34 @@
+/*
+ * logger_fs.h
+ *
+ *  Created on: Sep 23, 2025
+ *      Author: MTA
+ */
+
+#ifndef INC_LOGGER_FS_H_
+#define INC_LOGGER_FS_H_
+
+#define MAX_RDWR_DATA_SIZE 64U
+#define LOGS_FILE_PATH "system/logs"
+#define SYSTEM_BOTT_FILE_PATH "system/boot_data"
+
+#include <stdint.h>
+
+typedef enum {
+  LFS_LOGGER_OK = 0U,
+  LFS_LOGGER_ERROR = 1U,
+
+} LFS_Logger_Status_e;
+
+LFS_Logger_Status_e logger_fs_take_log(const uint8_t *path,
+                                       const uint8_t *data_buffer,
+                                       const uint32_t size);
+
+LFS_Logger_Status_e logger_fs_delete_file(const uint8_t *path);
+
+LFS_Logger_Status_e logger_fs_read_file(const uint8_t *path,
+                                        const uint32_t size,
+                                        uint8_t *data_buffer);
+LFS_Logger_Status_e logger_fs_init(void);
+
+#endif /* INC_LOGGER_FS_H_ */
