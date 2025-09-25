@@ -13,7 +13,7 @@
 #include "spi.h"
 #include <stdint.h>
 
-#define W25Q_BUSY_TIMEOUT_MS 1U
+#define W25Q_BUSY_TIMEOUT_MS 5U
 #define W25Q_SPI_CH 1U
 
 #define WRITE_ENABLE 0x06U
@@ -242,7 +242,6 @@ W25Q_State_e w25q_read_data(const uint32_t address, const uint16_t size,
                             uint8_t *p_data_buff) {
   HAL_StatusTypeDef status = HAL_OK;
 
-  uint8_t dummy_rx_buff[4U] = {0U};
   uint8_t tx_buff[4U] = {0U};
 
   tx_buff[0U] = READ_DATA_REG;
@@ -268,4 +267,30 @@ W25Q_State_e w25q_read_data(const uint32_t address, const uint16_t size,
   return W25Q_OK;
 }
 
-W25Q_State_e w25q_init(void) {}
+/**
+ * @brief This function initialize the nor memory.
+ * @param  None
+ * @retval Status of initialization.
+ */
+
+W25Q_State_e w25q_init(void) {
+  uint8_t busy_bit_status = 0U;
+  W25Q_State_e status = W25Q_OK;
+  uint32_t start_time = HAL_GetTick();
+
+  do {
+    status = w25q_check_busy_bit(&busy_bit_status);
+
+    if (W25Q_OK != status) {
+      return W25Q_ERROR;
+    }
+
+    if ((HAL_GetTick() - start_time) > W25Q_BUSY_TIMEOUT_MS) {
+      /*TODO: Give error*/
+      return W25Q_TIMEOUT;
+    }
+
+  } while (1U == busy_bit_status);
+
+  return W25Q_OK;
+}
