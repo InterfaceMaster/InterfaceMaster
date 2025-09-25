@@ -14,8 +14,26 @@
 #define LFS_FAIL -1
 #define LOGGER_FS_BUSY_TIMEOUT_MS 2U
 
+#define UART_DATA_LOG_DIR "UART_DATA"
+#define SPI_DATA_LOG_DIR "SPI_DATA"
+#define I2C_DATA_LOG_DIR "I2C_DATA"
+#define CAN_DATA_DIR "CAN_DATA"
+
+/*
+  ==============================================================================
+                      ##### STATIC VARIABLES #####
+  ==============================================================================
+
+  */
+
 static lfs_t s_logger_file_system;
 static lfs_file_t s_data_log_file;
+
+static lfs_dir_t s_uart_data_dir;
+static lfs_dir_t s_spi_data_dir;
+static lfs_dir_t s_i2c_data_dir;
+static lfs_dir_t s_can_data_dir;
+
 /*
   ==============================================================================
                       ##### STATIC FUNCTIONS #####
@@ -120,18 +138,20 @@ static int s_logger_fs_sync(const struct lfs_config *cfg) {
 
 /**
  * @brief This function writes the related data to given path.
- * @param  p_path Address of directory path string.
+ * @param  p_dir Address of directory handler.
+ * @param  p_dir_name Address of directory name string.
+ * @param  p_file Address of file name string.
  * @param  p_data_buffer Address of data to be write.
  * @retval Status of write success.
  */
 
-LFS_Logger_Status_e logger_fs_write_file(const uint8_t *p_path,
+LFS_Logger_Status_e logger_fs_write_file(const lfs_dir_t *p_dir,
+                                         const uint8_t *p_dir_name,
+                                         const uint8_t *p_file_name,
                                          const uint8_t *p_data_buffer,
                                          const uint32_t size) {
 
-  LFS_Logger_Status_e logger_fs_status = LFS_LOGGER_OK;
-
-  if ((NULL == p_path) || (NULL == data_buffer) || (0U == size)) {
+  if ((NULL == p_file_name) || (NULL == data_buffer) || (0U == size)) {
     logger_fs_status = LFS_LOGGER_ERROR;
     return logger_fs_status;
   }
@@ -139,13 +159,18 @@ LFS_Logger_Status_e logger_fs_write_file(const uint8_t *p_path,
   int status = LFS_ERR_OK;
   int writen_byte = 0;
 
-  status =
-      lfs_file_open(&s_logger_file_system, &s_data_log_file, (const char *)p_path,
-                    LFS_O_RDWR | LFS_O_CREAT | LFS_O_APPEND);
+  status = lfs_dir_open(&s_logger_file_system, p_dir, p_dir_name);
 
   if (LFS_ERR_OK != status) {
-    logger_fs_status = LFS_LOGGER_ERROR;
-    return logger_fs_status;
+    return LFS_LOGGER_ERROR;
+  }
+
+  status = lfs_file_open(&s_logger_file_system, &s_data_log_file,
+                         (const char *)p_file_name,
+                         LFS_O_RDWR | LFS_O_CREAT | LFS_O_APPEND);
+
+  if (LFS_ERR_OK != status) {
+    return LFS_LOGGER_ERROR;
   }
 
   writen_byte = lfs_file_write(&s_logger_file_system, &s_data_log_file,
@@ -153,17 +178,22 @@ LFS_Logger_Status_e logger_fs_write_file(const uint8_t *p_path,
 
   if (writen_byte != size) {
     lfs_file_close(&s_logger_file_system, &s_data_log_file);
-    logger_fs_status = LFS_LOGGER_ERROR;
-    return logger_fs_status;
+    return LFS_LOGGER_ERROR;
   }
 
   status = lfs_file_close(&s_logger_file_system, &s_data_log_file);
+
   if (LFS_ERR_OK != status) {
-    logger_fs_status = LFS_LOGGER_ERROR;
-    return logger_fs_status;
+    return LFS_LOGGER_ERROR;
   }
 
-  return logger_fs_status;
+  status = lfs_dir_close(&s_logger_file_system, p_dir);
+
+  if (LFS_ERR_OK != status) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  return LFS_LOGGER_OK;
 }
 
 /**
@@ -176,44 +206,49 @@ LFS_Logger_Status_e logger_fs_delete_file(const uint8_t *p_path) {
 
   LFS_Logger_Status_e logger_fs_status = LFS_LOGGER_OK;
   if (NULL == p_path) {
-    logger_fs_status = LFS_LOGGER_ERROR;
-    return logger_fs_status;
+    return LFS_LOGGER_ERROR;
   }
 
   int status = lfs_remove(&s_logger_file_system, p_path);
 
   if (LFS_ERR_OK != status) {
-    logger_fs_status = LFS_LOGGER_ERROR;
-    return logger_fs_status;
+    return LFS_LOGGER_ERROR;
   }
-  return logger_fs_status;
+  return LFS_LOGGER_OK;
 }
 
 /**
  * @brief This function reads the file.
- * @param  p_path Address of directory path string.
- * @param  p_data_buffer Address of data to be write.
+ * @param  p_dir Address of directory handler.
+ * @param  p_dir_name Address of directory name string.
+ * @param  p_file_name Address of file name string.
+ * @param  p_data_buffer Address of buffer data to be write.
  * @retval Status of read success.
  */
 
-LFS_Logger_Status_e logger_fs_read_file(const uint8_t *p_path,
+LFS_Logger_Status_e logger_fs_read_file(const lfs_dir_t *p_dir,
+                                        const uint8_t *p_dir_name,
+                                        const uint8_t *p_file_name,
                                         const uint32_t size,
                                         uint8_t *data_buffer) {
 
-  LFS_Logger_Status_e logger_fs_status = LFS_LOGGER_OK;
-  if ((NULL == p_path) || (NULL == data_buffer) || (0U == size)) {
-    logger_fs_status = LFS_LOGGER_ERROR;
-    return logger_fs_status;
+  if ((NULL == p_file_name) || (NULL == data_buffer) || (0U == size)) {
+    return LFS_LOGGER_ERROR;
   }
   int status = LFS_ERR_OK;
   int readed_byte = 0;
 
-  status = lfs_file_open(&s_logger_file_system, &s_data_log_file, p_path,
+  status = lfs_dir_open(&s_logger_file_system, p_dir, p_dir_name);
+
+  if (LFS_ERR_OK != status) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  status = lfs_file_open(&s_logger_file_system, &s_data_log_file, p_file_name,
                          LFS_O_RDONLY);
 
   if (LFS_ERR_OK != status) {
-    logger_fs_status = LFS_LOGGER_ERROR;
-    return logger_fs_status;
+    return LFS_LOGGER_ERROR;
   }
 
   readed_byte =
@@ -221,18 +256,21 @@ LFS_Logger_Status_e logger_fs_read_file(const uint8_t *p_path,
 
   if (readed_byte < 0) {
     lfs_file_close(&s_logger_file_system, &s_data_log_file);
-    logger_fs_status = LFS_LOGGER_ERROR;
-    return logger_fs_status;
+    return LFS_LOGGER_ERROR;
   }
 
   status = lfs_file_close(&s_logger_file_system, &s_data_log_file);
 
   if (LFS_ERR_OK != status) {
-    logger_fs_status = LFS_LOGGER_ERROR;
-    return logger_fs_status;
+    return LFS_LOGGER_ERROR;
   }
 
-  return logger_fs_status;
+  status = lfs_dir_close(&s_logger_file_system, p_dir);
+  if (LFS_ERR_OK != status) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  return LFS_LOGGER_OK;
 }
 
 /**
@@ -243,7 +281,14 @@ LFS_Logger_Status_e logger_fs_read_file(const uint8_t *p_path,
 
 LFS_Logger_Status_e logger_fs_init(void) {
 
-  LFS_Logger_Status_e logger_fs_status = LFS_LOGGER_OK;
+  W25Q_State_e w25q_status = W25Q_OK;
+
+  w25q_status = w25q_init();
+
+  if (w25q_ok != w25q_status) {
+    return LFS_LOGGER_ERROR;
+  }
+
   int status = lfs_mount(&s_logger_file_system, &cfg);
 
   if (LFS_ERR_NOENT == status) {
@@ -259,7 +304,29 @@ LFS_Logger_Status_e logger_fs_init(void) {
      * format*/
   }
 
-  logger_fs_status = (LFS_ERR_OK == status) ? LFS_LOGGER_OK : LFS_LOGGER_ERROR;
+  status = lfs_mkdir(&s_logger_file_system, UART_DATA_LOG_DIR);
 
-  return logger_fs_status;
+  if (LFS_ERR_OK != status) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  status = lfs_mkdir(&s_logger_file_system, SPI_DATA_LOG_DIR);
+
+  if (LFS_ERR_OK != status) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  status = lfs_mkdir(&s_logger_file_system, I2C_DATA_LOG_DIR);
+
+  if (LFS_ERR_OK != status) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  status = lfs_mkdir(&s_logger_file_system, CAN_DATA_DIR);
+
+  if (LFS_ERR_OK != status) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  return LFS_LOGGER_OK;
 }
