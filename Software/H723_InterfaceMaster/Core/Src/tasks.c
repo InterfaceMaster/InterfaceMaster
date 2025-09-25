@@ -168,6 +168,8 @@ void IM_peripheral_init(void) {
 
   USB_init();
 
+  logger_fs_init();
+
   ft5426_init();
   tft_init();
 }
