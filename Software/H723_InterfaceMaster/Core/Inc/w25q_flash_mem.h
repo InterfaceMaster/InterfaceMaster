@@ -14,8 +14,7 @@ typedef enum {
   W25Q_OK = 0U,
   W25Q_ERROR = 1U,
   W25Q_TIMEOUT = 2U,
-
-} W25Q_State_e;
+} W25Q_Status_e;
 
 W25Q_State_e w25q_check_busy_bit(uint8_t *busy_bit_status);
 W25Q_State_e w25q_page_program(const uint32_t address, const uint8_t size,

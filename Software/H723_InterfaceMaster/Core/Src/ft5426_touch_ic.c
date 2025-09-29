@@ -7,12 +7,13 @@
 #include "ft5426_touch_ic.h"
 #include "i2c.h"
 #include "main.h"
-#include "stdint.h"
 
-#define I2C_ADDRESS 0x38U << 1U
+#include <stdint.h>
+
+#define I2C_ADDRESS (0x38U << 1U)
 
 #define WORKING_MODE_REG 0X00U
-#define NUMBER_OF_TOUCH_POINT 0x02
+#define NUMBER_OF_TOUCH_POINT 0x02U
 
 #define FT5426_EVENT_FLAG_MASK 0XC0U
 
@@ -36,7 +37,8 @@ static void ft5426_read_register(const uint8_t reg_addr, uint8_t *data_buff,
     return;
   }
   HAL_I2C_Mem_Read(&hi2c4, (uint16_t)I2C_ADDRESS, (uint16_t)reg_addr,
-                   I2C_MEMADD_SIZE_8BIT, data_buff, data_size, 100U);
+                   I2C_MEMADD_SIZE_8BIT, data_buff, data_size,
+                   I2C_TIMEOUT_100_MS);
 }
 
 /**
@@ -50,7 +52,8 @@ static void ft5426_write_register(const uint8_t reg_addr, uint8_t data) {
 
   uint8_t tx_buff[2U] = {reg_addr, data};
 
-  HAL_I2C_Master_Transmit(&hi2c4, I2C_ADDRESS, tx_buff, 2U, 100U);
+  HAL_I2C_Master_Transmit(&hi2c4, I2C_ADDRESS, &tx_buff[0U], sizeof(tx_buff),
+                          I2C_TIMEOUT_100_MS);
 }
 
 /**

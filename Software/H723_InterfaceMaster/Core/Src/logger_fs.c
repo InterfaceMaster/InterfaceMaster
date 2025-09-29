@@ -75,7 +75,7 @@ static int s_logger_fs_data_read(const struct lfs_config *cfg,
   int logger_status = LFS_SUCCES;
   uint32_t address = (block * cfg->block_size) + off;
 
-  W25Q_State_e status =
+  W25Q_Staus_e status =
       w25q_read_data(address, (uint16_t)size, (uint8_t *)buffer);
 
   logger_status = (W25Q_OK == status) ? LFS_SUCCES : LFS_FAIL;
@@ -88,7 +88,7 @@ static int s_logger_fs_block_erase(const struct lfs_config *cfg,
 
   int logger_status = LFS_SUCCES;
 
-  W25Q_State_e status = w25q_sector_erase(block);
+  W25Q_Staus_e status = w25q_sector_erase(block);
 
   logger_status = (W25Q_OK == status) ? LFS_SUCCES : LFS_FAIL;
 
@@ -102,7 +102,7 @@ static int s_logger_fs_page_program(const struct lfs_config *cfg,
   int logger_status = LFS_SUCCES;
   uint32_t address = (block * cfg->block_size) + off;
 
-  W25Q_State_e status =
+  W25Q_Staus_e status =
       w25q_page_program(address, (uint16_t)size, (uint8_t *)buffer);
 
   logger_status = (W25Q_OK == status) ? LFS_SUCCES : LFS_FAIL;
@@ -112,7 +112,7 @@ static int s_logger_fs_page_program(const struct lfs_config *cfg,
 
 static int s_logger_fs_sync(const struct lfs_config *cfg) {
   uint8_t busy_bit_status = 0U;
-  W25Q_State_e status = W25Q_OK;
+  W25Q_Staus_e status = W25Q_OK;
   uint32_t start_time = HAL_GetTick();
   do {
 
@@ -281,7 +281,7 @@ LFS_Logger_Status_e logger_fs_read_file(const lfs_dir_t *p_dir,
 
 LFS_Logger_Status_e logger_fs_init(void) {
 
-  W25Q_State_e w25q_status = W25Q_OK;
+  W25Q_Staus_e w25q_status = W25Q_OK;
 
   w25q_status = w25q_init();
 
