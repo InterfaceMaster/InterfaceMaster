@@ -36,7 +36,7 @@
  * @param None.
  * @retval Transmit state.
  */
-static W25Q_Staus_e w25q_write_enable(void) {
+static W25Q_Status_e w25q_write_enable(void) {
   HAL_StatusTypeDef status = W25Q_ERROR;
   status = IM_spi_send_command(W25Q_SPI_CH, WRITE_ENABLE);
   if (HAL_OK != status) {
@@ -51,7 +51,7 @@ static W25Q_Staus_e w25q_write_enable(void) {
  * @retval Transmit state.
  */
 
-static W25Q_Staus_e w25q_write_disable(void) {
+static W25Q_Status_e w25q_write_disable(void) {
 
   HAL_StatusTypeDef status = W25Q_ERROR;
   status = IM_spi_send_command(W25Q_SPI_CH, WRITE_DISABLE);
@@ -68,7 +68,7 @@ static W25Q_Staus_e w25q_write_disable(void) {
  * @retval Read state.
  */
 
-static W25Q_Staus_e w25q_read_status_reg_1(uint8_t *p_data_buff) {
+static W25Q_Status_e w25q_read_status_reg_1(uint8_t *p_data_buff) {
 
   HAL_StatusTypeDef status = W25Q_ERROR;
   uint8_t temp = STATUS_REG_1;
@@ -102,9 +102,9 @@ static W25Q_Staus_e w25q_read_status_reg_1(uint8_t *p_data_buff) {
  * stored.
  * @retval Operation state.
  */
-W25Q_Staus_e w25q_check_busy_bit(uint8_t *busy_bit_status) {
+W25Q_Status_e w25q_check_busy_bit(uint8_t *busy_bit_status) {
 
-  W25Q_Staus_e status = W25Q_OK;
+  W25Q_Status_e status = W25Q_OK;
   uint8_t status_reg_data = 0U;
 
   status = w25q_read_status_reg_1(&status_reg_data);
@@ -126,8 +126,8 @@ W25Q_Staus_e w25q_check_busy_bit(uint8_t *busy_bit_status) {
  * @retval Status of page program operation.
  */
 
-W25Q_Staus_e w25q_page_program(const uint32_t address, const uint8_t size,
-                               const uint8_t *p_data_buff) {
+W25Q_Status_e w25q_page_program(const uint32_t address, const uint8_t size,
+                                const uint8_t *p_data_buff) {
 
   uint8_t busy_bit_status = 0u;
   HAL_StatusTypeDef status = HAL_OK;
@@ -186,7 +186,7 @@ W25Q_Staus_e w25q_page_program(const uint32_t address, const uint8_t size,
  * @param size Number of data byte to delete.
  * @retval Status of sector erase operation.
  */
-W25Q_Staus_e w25q_sector_erase(const uint32_t address) {
+W25Q_Status_e w25q_sector_erase(const uint32_t address) {
 
   uint8_t busy_bit_status = 0U;
   HAL_StatusTypeDef status = HAL_OK;
@@ -238,8 +238,8 @@ W25Q_Staus_e w25q_sector_erase(const uint32_t address) {
  * @retval None.
  */
 
-W25Q_Staus_e w25q_read_data(const uint32_t address, const uint16_t size,
-                            uint8_t *p_data_buff) {
+W25Q_Status_e w25q_read_data(const uint32_t address, const uint16_t size,
+                             uint8_t *p_data_buff) {
   HAL_StatusTypeDef status = HAL_OK;
 
   uint8_t tx_buff[4U] = {0U};
@@ -273,9 +273,9 @@ W25Q_Staus_e w25q_read_data(const uint32_t address, const uint16_t size,
  * @retval Status of initialization.
  */
 
-W25Q_Staus_e w25q_init(void) {
+W25Q_Status_e w25q_init(void) {
   uint8_t busy_bit_status = 0U;
-  W25Q_Staus_e status = W25Q_OK;
+  W25Q_Status_e status = W25Q_OK;
   uint32_t start_time = HAL_GetTick();
 
   do {

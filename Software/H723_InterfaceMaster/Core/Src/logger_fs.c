@@ -75,7 +75,7 @@ static int s_logger_fs_data_read(const struct lfs_config *cfg,
   int logger_status = LFS_SUCCES;
   uint32_t address = (block * cfg->block_size) + off;
 
-  W25Q_Staus_e status =
+  W25Q_Status_e status =
       w25q_read_data(address, (uint16_t)size, (uint8_t *)buffer);
 
   logger_status = (W25Q_OK == status) ? LFS_SUCCES : LFS_FAIL;
@@ -88,7 +88,7 @@ static int s_logger_fs_block_erase(const struct lfs_config *cfg,
 
   int logger_status = LFS_SUCCES;
 
-  W25Q_Staus_e status = w25q_sector_erase(block);
+  W25Q_Status_e status = w25q_sector_erase(block);
 
   logger_status = (W25Q_OK == status) ? LFS_SUCCES : LFS_FAIL;
 
@@ -102,7 +102,7 @@ static int s_logger_fs_page_program(const struct lfs_config *cfg,
   int logger_status = LFS_SUCCES;
   uint32_t address = (block * cfg->block_size) + off;
 
-  W25Q_Staus_e status =
+  W25Q_Status_e status =
       w25q_page_program(address, (uint16_t)size, (uint8_t *)buffer);
 
   logger_status = (W25Q_OK == status) ? LFS_SUCCES : LFS_FAIL;
@@ -112,7 +112,7 @@ static int s_logger_fs_page_program(const struct lfs_config *cfg,
 
 static int s_logger_fs_sync(const struct lfs_config *cfg) {
   uint8_t busy_bit_status = 0U;
-  W25Q_Staus_e status = W25Q_OK;
+  W25Q_Status_e status = W25Q_OK;
   uint32_t start_time = HAL_GetTick();
   do {
 
@@ -145,21 +145,20 @@ static int s_logger_fs_sync(const struct lfs_config *cfg) {
  * @retval Status of write success.
  */
 
-LFS_Logger_Status_e logger_fs_write_file(const lfs_dir_t *p_dir,
+LFS_Logger_Status_e logger_fs_write_file(lfs_dir_t *p_dir,
                                          const uint8_t *p_dir_name,
                                          const uint8_t *p_file_name,
                                          const uint8_t *p_data_buffer,
                                          const uint32_t size) {
 
-  if ((NULL == p_file_name) || (NULL == data_buffer) || (0U == size)) {
-    logger_fs_status = LFS_LOGGER_ERROR;
-    return logger_fs_status;
+  if ((NULL == p_file_name) || (NULL == p_data_buffer) || (0U == size)) {
+    return LFS_LOGGER_ERROR;
   }
 
   int status = LFS_ERR_OK;
   int writen_byte = 0;
 
-  status = lfs_dir_open(&s_logger_file_system, p_dir, p_dir_name);
+  status = lfs_dir_open(&s_logger_file_system, p_dir, (const char *)p_dir_name);
 
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;
@@ -204,12 +203,11 @@ LFS_Logger_Status_e logger_fs_write_file(const lfs_dir_t *p_dir,
 
 LFS_Logger_Status_e logger_fs_delete_file(const uint8_t *p_path) {
 
-  LFS_Logger_Status_e logger_fs_status = LFS_LOGGER_OK;
   if (NULL == p_path) {
     return LFS_LOGGER_ERROR;
   }
 
-  int status = lfs_remove(&s_logger_file_system, p_path);
+  int status = lfs_remove(&s_logger_file_system, (const char *)p_path);
 
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;
@@ -226,7 +224,7 @@ LFS_Logger_Status_e logger_fs_delete_file(const uint8_t *p_path) {
  * @retval Status of read success.
  */
 
-LFS_Logger_Status_e logger_fs_read_file(const lfs_dir_t *p_dir,
+LFS_Logger_Status_e logger_fs_read_file(lfs_dir_t *p_dir,
                                         const uint8_t *p_dir_name,
                                         const uint8_t *p_file_name,
                                         const uint32_t size,
@@ -238,14 +236,14 @@ LFS_Logger_Status_e logger_fs_read_file(const lfs_dir_t *p_dir,
   int status = LFS_ERR_OK;
   int readed_byte = 0;
 
-  status = lfs_dir_open(&s_logger_file_system, p_dir, p_dir_name);
+  status = lfs_dir_open(&s_logger_file_system, p_dir, (const char *)p_dir_name);
 
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;
   }
 
-  status = lfs_file_open(&s_logger_file_system, &s_data_log_file, p_file_name,
-                         LFS_O_RDONLY);
+  status = lfs_file_open(&s_logger_file_system, &s_data_log_file,
+                         (const char *)p_file_name, LFS_O_RDONLY);
 
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;
@@ -281,11 +279,11 @@ LFS_Logger_Status_e logger_fs_read_file(const lfs_dir_t *p_dir,
 
 LFS_Logger_Status_e logger_fs_init(void) {
 
-  W25Q_Staus_e w25q_status = W25Q_OK;
+  W25Q_Status_e w25q_status = W25Q_OK;
 
   w25q_status = w25q_init();
 
-  if (w25q_ok != w25q_status) {
+  if (W25Q_OK != w25q_status) {
     return LFS_LOGGER_ERROR;
   }
 
