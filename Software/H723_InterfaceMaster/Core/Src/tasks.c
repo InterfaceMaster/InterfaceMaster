@@ -73,6 +73,7 @@ typedef struct {
  */
 
 typedef struct {
+  double ambient_temp;
   CommProtocol_t comm_protocol;
 } SystemInstance_t;
 
@@ -170,6 +171,7 @@ void IM_peripheral_init(void) {
 
   logger_fs_init();
 
+  lm75b_init();
   ft5426_init();
   tft_init();
 }
@@ -201,7 +203,7 @@ void IM_task_init(void) {
  * @param None.
  * @retval None.
  */
-void run_tasks(void) {
+void IM_run_tasks(void) {
 
   uint32_t u32_current_time = HAL_GetTick();
   uint8_t task_amaount = sizeof(s_tasks_config) / sizeof(s_tasks_config[0U]);

@@ -38,13 +38,19 @@ extern I2C_HandleTypeDef hi2c4;
 
 /* USER CODE BEGIN Private defines */
 #define I2C_TIMEOUT_100_MS 100U
+
+typedef enum {
+  I2C_ADDRESS_FOUND = 0U,
+  I2C_ADDRESS_NONE = 1U,
+  I2C_ADDRESS_INVALID = 2U,
+} I2C_DeviceStatus_e;
 /* USER CODE END Private defines */
 
 void MX_I2C1_Init(void);
 void MX_I2C4_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+I2C_DeviceStatus_e IM_I2C_bus_scanner(uint8_t address);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

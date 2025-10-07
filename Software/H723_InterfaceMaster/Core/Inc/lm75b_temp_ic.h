@@ -14,4 +14,6 @@ typedef enum {
   LM75B_TIMEOUT = 2U,
 } LM75B_Status_e;
 
+LM75B_Status_e lm75b_get_ambient_temp(double *buff);
+
 #endif /* INC_LM75B_TEMP_IC_H_ */

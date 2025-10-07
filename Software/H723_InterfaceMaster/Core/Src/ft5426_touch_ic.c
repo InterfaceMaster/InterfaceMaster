@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-#define I2C_ADDRESS (0x38U << 1U)
+#define I2C_ADDRESS 0x38U
 
 #define WORKING_MODE_REG 0X00U
 #define NUMBER_OF_TOUCH_POINT 0x02U
@@ -36,7 +36,7 @@ static void ft5426_read_register(const uint8_t reg_addr, uint8_t *data_buff,
   if (data_buff == NULL) {
     return;
   }
-  HAL_I2C_Mem_Read(&hi2c4, (uint16_t)I2C_ADDRESS, (uint16_t)reg_addr,
+  HAL_I2C_Mem_Read(&hi2c4, (uint16_t)(I2C_ADDRESS << 1U), (uint16_t)reg_addr,
                    I2C_MEMADD_SIZE_8BIT, data_buff, data_size,
                    I2C_TIMEOUT_100_MS);
 }
@@ -52,8 +52,8 @@ static void ft5426_write_register(const uint8_t reg_addr, uint8_t data) {
 
   uint8_t tx_buff[2U] = {reg_addr, data};
 
-  HAL_I2C_Master_Transmit(&hi2c4, I2C_ADDRESS, &tx_buff[0U], sizeof(tx_buff),
-                          I2C_TIMEOUT_100_MS);
+  HAL_I2C_Master_Transmit(&hi2c4, (I2C_ADDRESS << 1U), &tx_buff[0U],
+                          sizeof(tx_buff), I2C_TIMEOUT_100_MS);
 }
 
 /**
@@ -103,6 +103,8 @@ void ft5426_get_touch_data(FT5426_TouchData_t *touch_data) {
  */
 
 void ft5426_init(void) {
-  /*TODO Add bus scanner. If IC address note found give error.*/
+  IM_I2C_bus_scanner(I2C_ADDRESS);
+  /*TODO: Add ft5426 status enumaration to related sections*/
+
   ft5426_set_working_mode();
 }

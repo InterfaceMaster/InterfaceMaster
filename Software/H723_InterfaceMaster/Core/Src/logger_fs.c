@@ -3,6 +3,9 @@
  *
  *  Created on: Sep 23, 2025
  *      Author: MTA
+ *
+ * @note Advantage of little fs is wear leveling.
+ * https://os.mbed.com/blog/entry/littlefs-high-integrity-embedded-fs/
  */
 
 #include "logger_fs.h"
