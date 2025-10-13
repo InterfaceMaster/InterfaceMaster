@@ -59,3 +59,4 @@ HAL_StatusTypeDef IM_spi_send_command(const uint8_t spi_ch, const uint8_t reg);
 #endif
 
 #endif /* __SPI_H__ */
+

@@ -60,22 +60,7 @@ typedef struct {
   uint32_t u32_last_run_time;
   uint32_t u32_elapsed_time;
   uint32_t u32_period;
-
 } TaskConfig_t;
-
-/**
- * @brief  This structure holds the entire system status information and
- * configuration.
- * @details This structure centralizes data related the current state of all
- * tasks and sensors.
- * @attention Any modification to this structure requires analysis the entire
- * system.
- */
-
-typedef struct {
-  double ambient_temp;
-  CommProtocol_t comm_protocol;
-} SystemInstance_t;
 
 /*
   ==============================================================================
@@ -83,9 +68,10 @@ typedef struct {
   ==============================================================================
 
   */
-static TaskConfig_t s_tasks_config[2U];
+static TaskConfig_t s_tasks_config[3U];
 static uint8_t s_u8_usb_task_period_ms = 10U;
 static uint8_t s_u8_gui_task_period_ms = 100U;
+static uint8_t s_u8_comm_protocol_task_ms = 5U;
 
 /*
   ==============================================================================
@@ -93,6 +79,14 @@ static uint8_t s_u8_gui_task_period_ms = 100U;
   ==============================================================================
 
   */
+
+/**
+ *@brief This function is communication protocol task.
+ *@param None.
+ *@retVal None.
+ */
+
+static void s_comm_protocol_task_CB(void) {}
 
 /**
  *@brief This function is UI task callback.
@@ -196,6 +190,9 @@ void IM_task_init(void) {
 
   s_tasks_config[1U].pTask_CB = &s_gui_task_CB;
   s_tasks_config[1U].u32_period = s_u8_gui_task_period_ms;
+
+  s_tasks_config[2U].pTask_CB = &s_comm_protocol_task_CB;
+  s_tasks_config[2U].u32_period = s_u8_comm_protocol_task_ms;
 };
 
 /**

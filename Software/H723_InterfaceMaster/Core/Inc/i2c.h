@@ -58,3 +58,4 @@ I2C_DeviceStatus_e IM_I2C_bus_scanner(uint8_t address);
 #endif
 
 #endif /* __I2C_H__ */
+

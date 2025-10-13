@@ -15,6 +15,20 @@
 #ifndef INC_TASKS_H_
 #define INC_TASKS_H_
 
+/**
+ * @brief  This structure holds the entire system status information and
+ * configuration.
+ * @details This structure centralizes data related the current state of all
+ * tasks and sensors.
+ * @attention Any modification to this structure requires analysis the entire
+ * system.
+ */
+
+typedef struct {
+  double ambient_temp;
+  CommProtocol_t comm_protocol;
+} SystemInstance_t;
+
 void IM_peripheral_init(void);
 void IM_library_init(void);
 
