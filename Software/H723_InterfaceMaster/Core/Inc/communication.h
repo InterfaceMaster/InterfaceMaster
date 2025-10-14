@@ -60,8 +60,8 @@ typedef enum {
 typedef enum {
   COMM_STATUS_OK = 0U,
   COMM_STATUS_BUSY = 1U,
-  COMM_STATUS_EMEM = 2U,
-  COMM_STATUS_FAIL = 3U,
+  COMM_STATUS_FAIL = 2U,
+  COMM_STATUS_IDLE = 3U,
 } CommProtocolStatus_e;
 
 /**
@@ -93,7 +93,7 @@ uint8_t *get_comm_protocol_tx_buff(void);
 uint8_t get_comm_protocol_rx_size(void);
 uint8_t get_comm_protocol_tx_size(void);
 
-void fill_comm_protocol_rx_buff(uint8_t *p_buff);
+void flush_comm_protocol_rx_buff(uint8_t *p_buff);
 void set_comm_protocol_rx_size(uint8_t size);
 void set_comm_protocol_tx_size(uint8_t size);
 

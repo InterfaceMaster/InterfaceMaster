@@ -107,7 +107,7 @@ static void s_set_comm_protocol_type(CommProtocolType_e comm_protocol_type) {
  * @param Address of data buffer.
  * @retVal None.
  */
-void fill_comm_protocol_rx_buff(uint8_t *p_buff) {
+void flush_comm_protocol_rx_buff(uint8_t *p_buff) {
   if ((NULL == p_buff) || (NULL == s_comm_protocol_handler.p_rx_buff_0) ||
       (NULL == s_comm_protocol_handler.p_rx_buff_1)) {
     return;
@@ -173,11 +173,11 @@ uint8_t *get_comm_protocol_tx_buff(void) {
 uint8_t *get_comm_protocol_rx_buff(void) {
 
   if (COMM_ACTIVE_BUFF_0 == s_comm_protocol_handler.active_buff) {
-    return s_comm_protocol_handler.p_rx_buff_0;
+    return &s_comm_protocol_handler.p_rx_buff_0[0U];
   } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
-    return s_comm_protocol_handler.p_rx_buff_1;
+    return &s_comm_protocol_handler.p_rx_buff_1[0U];
   }
-  return 0U; /*TODO: add logs for hardfault*/
+  return NULL; /*TODO: add logs for hardfault*/
 }
 
 /**
@@ -229,6 +229,16 @@ void init_comm_protocol_handler(CommProtocol_t *comm_protocol) {
 }
 
 /**
+ *@brief This function checks the communication protocol state.
+ *@param
+ *@retVal None.
+ */
+
+void check_comm_protocol_receive_state(CommProtocolStatus_e state) {
+  s_comm_protocol_handler.rx_status = state;
+}
+
+/**
  *@brief This function deinitialize the communication task handler.
  *@param None.
  *retVal None.
@@ -236,8 +246,10 @@ void init_comm_protocol_handler(CommProtocol_t *comm_protocol) {
 
 void deinit_comm_protocol_handler(void) {
 
-  memset(&s_comm_protocol_handler.p_rx_buff_0[0U], '\0', MAX_COMM_PROTOCOL_SIZE);
-  memset(&s_comm_protocol_handler.p_rx_buff_1[0U], '\0', MAX_COMM_PROTOCOL_SIZE);
+  memset(&s_comm_protocol_handler.p_rx_buff_0[0U], '\0',
+         MAX_COMM_PROTOCOL_SIZE);
+  memset(&s_comm_protocol_handler.p_rx_buff_1[0U], '\0',
+         MAX_COMM_PROTOCOL_SIZE);
 
   s_comm_protocol_handler.p_rx_buff_0 = NULL;
   s_comm_protocol_handler.p_rx_buff_1 = NULL;
@@ -246,22 +258,131 @@ void deinit_comm_protocol_handler(void) {
 }
 
 /**
- *@brief This function is the communication task state machine.
- *@param None.
- *retVal None.
- */
-
-void run_comm_protocol_task(CommProtocol_t *comm_protocol) {
-
-  if (NULL == comm_protocol) {
-    return;
-  }
-}
-
-/**
  * @brief This function sends related data via USB.
  * @attention Any modification to this function not requires.
  * @param None.
  * @retVal None.
  */
-void USB_send_data(void) {}
+void USB_send_data(void) {
+  // s_comm_protocol_handler.p_tx_buff =
+  if (0U != s_comm_protocol_handler.u8_rx_size) {
+    //    CDC_Transmit_HS(Buf, Len)
+  }
+}
+
+/**
+ * @brief  Reception Event Callback (Rx event notification called after use of
+ * advanced reception service).
+ * @param  huart UART handle
+ * @param  Size  Number of data available in application reception buffer
+ * (indicates a position in reception buffer until which, data are available)
+ * @retval None
+ */
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
+  /* Prevent unused argument(s) compilation warning */
+  if (UART7 == huart->Instance) {
+    s_comm_protocol_handler.u8_rx_size = (uint8_t)Size;
+
+    if ((NULL == s_comm_protocol_handler.p_rx_buff_0) ||
+        (NULL == s_comm_protocol_handler.p_rx_buff_1)) {
+      return;
+    }
+
+    if (COMM_ACTIVE_BUFF_0 == s_comm_protocol_handler.active_buff) {
+
+      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
+
+      memset(s_comm_protocol_handler.p_rx_buff_0, '\0', MAX_COMM_PROTOCOL_SIZE);
+      memcpy(s_comm_protocol_handler.p_rx_buff_0, p_buff,
+             MAX_COMM_PROTOCOL_SIZE - 2U);
+
+      *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
+      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+      memset(&s_comm_protocol_handler.p_rx_buff_0[0U], '\0',
+             MAX_COMM_PROTOCOL_SIZE);
+      HAL_UARTEx_ReceiveToIdle_DMA(&huart7,
+                                   &s_comm_protocol_handler.p_rx_buff_0[0U],
+                                   MAX_COMM_PROTOCOL_SIZE);
+
+    } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
+
+      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
+
+      memset(s_comm_protocol_handler.p_rx_buff_1, '\0', MAX_COMM_PROTOCOL_SIZE);
+      memcpy(s_comm_protocol_handler.p_rx_buff_1, p_buff,
+             MAX_COMM_PROTOCOL_SIZE - 2U);
+
+      *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
+
+      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+      memset(&s_comm_protocol_handler.p_rx_buff_0[0U], '\0',
+             MAX_COMM_PROTOCOL_SIZE);
+      HAL_UARTEx_ReceiveToIdle_DMA(&huart7,
+                                   &s_comm_protocol_handler.p_rx_buff_0[0U],
+                                   MAX_COMM_PROTOCOL_SIZE);
+    } else {
+      s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+    }
+
+  } else if (USART2 == huart->Instance) {
+
+    if ((NULL == s_comm_protocol_handler.p_rx_buff_0) ||
+        (NULL == s_comm_protocol_handler.p_rx_buff_1)) {
+      return;
+    }
+
+    if (COMM_ACTIVE_BUFF_0 == s_comm_protocol_handler.active_buff) {
+
+      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
+
+      memset(&s_comm_protocol_handler.p_rx_buff_0[0U], '\0',
+             MAX_COMM_PROTOCOL_SIZE);
+      memcpy(s_comm_protocol_handler.p_rx_buff_0, p_buff,
+             MAX_COMM_PROTOCOL_SIZE - 2U);
+
+      *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
+
+      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+      memset(&s_comm_protocol_handler.p_rx_buff_0[0U], '\0',
+             MAX_COMM_PROTOCOL_SIZE);
+      HAL_UARTEx_ReceiveToIdle_DMA(&huart2,
+                                   &s_comm_protocol_handler.p_rx_buff_0[0U],
+                                   MAX_COMM_PROTOCOL_SIZE);
+
+    } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
+
+      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
+
+      memset(s_comm_protocol_handler.p_rx_buff_1, '\0', MAX_COMM_PROTOCOL_SIZE);
+      memcpy(s_comm_protocol_handler.p_rx_buff_1, p_buff,
+             MAX_COMM_PROTOCOL_SIZE - 2U);
+
+      *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
+
+      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+      memset(&s_comm_protocol_handler.p_rx_buff_1[0U], '\0',
+             MAX_COMM_PROTOCOL_SIZE);
+      HAL_UARTEx_ReceiveToIdle_DMA(&huart2,
+                                   &s_comm_protocol_handler.p_rx_buff_1[0U],
+                                   MAX_COMM_PROTOCOL_SIZE);
+
+    } else {
+      s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+    }
+  }
+}
+
+// void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c) {
+//
+//   flush_comm_protocol_rx_buff(data_buff);
+//   memset(data_buff, '\0', MAX_COMM_PROTOCOL_SIZE);
+//   check_comm_protocol_receive_state(COMM_STATUS_OK);
+// }

@@ -288,9 +288,5 @@ I2C_DeviceStatus_e IM_I2C_bus_scanner(uint8_t address) {
   return I2C_ADDRESS_NONE;
 }
 
-void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c) {
 
-  fill_comm_protocol_rx_buff(data_buff);
-  memset(data_buff, '\0', MAX_COMM_PROTOCOL_SIZE);
-}
 /* USER CODE END 1 */

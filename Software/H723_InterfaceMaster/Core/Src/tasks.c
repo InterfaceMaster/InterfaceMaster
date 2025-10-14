@@ -23,6 +23,7 @@
 #include "fmc.h"
 #include "gpio.h"
 #include "i2c.h"
+#include "lm75b_temp_ic.h"
 #include "ltdc.h"
 #include "main.h"
 #include "rtc.h"
@@ -68,7 +69,12 @@ typedef struct {
   ==============================================================================
 
   */
-static TaskConfig_t s_tasks_config[3U];
+static uint8_t s_u8_comm_rx_data_buff_0[MAX_COMM_PROTOCOL_SIZE] = {0U};
+static uint8_t s_u8_comm_rx_data_buff_1[MAX_COMM_PROTOCOL_SIZE] = {0U};
+static uint8_t s_u8_comm_tx_data_buff[MAX_COMM_PROTOCOL_SIZE] = {0U};
+
+static SystemInstance_t s_gSystem = {0U};
+static TaskConfig_t s_tasks_config[3U] = {0U};
 static uint8_t s_u8_usb_task_period_ms = 10U;
 static uint8_t s_u8_gui_task_period_ms = 100U;
 static uint8_t s_u8_comm_protocol_task_ms = 5U;
@@ -162,12 +168,6 @@ void IM_peripheral_init(void) {
   MX_TIM2_Init();
 
   USB_init();
-
-  logger_fs_init();
-
-  lm75b_init();
-  ft5426_init();
-  tft_init();
 }
 
 /**
@@ -176,7 +176,26 @@ void IM_peripheral_init(void) {
  * @retval None.
  * */
 
-void IM_library_init(void) { lv_init(); }
+void IM_system_init(void) {
+  logger_fs_init();
+
+  lm75b_init();
+  ft5426_init();
+  tft_init();
+  lv_init();
+
+  s_gSystem.comm_protocol.p_rx_buff_0 = &s_u8_comm_rx_data_buff_0[0U];
+  s_gSystem.comm_protocol.p_rx_buff_1 = &s_u8_comm_rx_data_buff_1[0U];
+
+  s_gSystem.comm_protocol.p_tx_buff = &s_u8_comm_tx_data_buff[0U];
+
+  s_gSystem.comm_protocol.active_buff = COMM_ACTIVE_BUFF_0;
+  s_gSystem.comm_protocol.type = COMM_PROTOCOL_TYPE_UART;
+  s_gSystem.comm_protocol.rx_status = COMM_STATUS_IDLE;
+  s_gSystem.comm_protocol.tx_status = COMM_STATUS_IDLE;
+
+  init_comm_protocol_handler(&s_gSystem.comm_protocol);
+}
 
 /**
  * @brief Initializes the system task configurations.

@@ -30,6 +30,7 @@ typedef struct {
 } SystemInstance_t;
 
 void IM_peripheral_init(void);
-void IM_library_init(void);
+void IM_system_init(void);
+void IM_run_tasks(void);
 
 #endif /* INC_TASKS_H_ */

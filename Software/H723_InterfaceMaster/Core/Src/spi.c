@@ -360,9 +360,10 @@ HAL_StatusTypeDef IM_spi_send_command(const uint8_t spi_ch, const uint8_t reg) {
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
   if (GPIO_Pin == GPIO_PIN_3) {
     HAL_SPI_DMAStop(&hspi2);
-    fill_comm_protocol_rx_buff(data_buff);
+    flush_comm_protocol_rx_buff(data_buff);
     memset(data_buff, '\0', MAX_COMM_PROTOCOL_SIZE);
     HAL_SPI_Receive_DMA(&hspi2, data_buff, MAX_COMM_PROTOCOL_SIZE);
+    check_comm_protocol_receive_state(COMM_STATUS_OK);
   }
 }
 /* USER CODE END 1 */
