@@ -36,6 +36,7 @@
 #include "usb_host.h"
 
 #include "ft5426_touch_ic.h"
+#include "logger_fs.h"
 #include "lvgl.h"
 #include "tft.h"
 /*
@@ -69,11 +70,14 @@ typedef struct {
   ==============================================================================
 
   */
-static uint8_t s_u8_comm_rx_data_buff_0[MAX_COMM_PROTOCOL_SIZE] = {0U};
-static uint8_t s_u8_comm_rx_data_buff_1[MAX_COMM_PROTOCOL_SIZE] = {0U};
-static uint8_t s_u8_comm_tx_data_buff[MAX_COMM_PROTOCOL_SIZE] = {0U};
 
 static SystemInstance_t s_gSystem = {0U};
+
+static volatile uint8_t s_u8_comm_rx_data_buff_0[MAX_USB_PROTOCOL_SIZE] = {0U};
+static volatile uint8_t s_u8_comm_rx_data_buff_1[MAX_USB_PROTOCOL_SIZE] = {0U};
+
+static volatile uint8_t s_u8_comm_tx_data_buff[MAX_USB_PROTOCOL_SIZE] = {0U};
+
 static TaskConfig_t s_tasks_config[3U] = {0U};
 static uint8_t s_u8_usb_task_period_ms = 10U;
 static uint8_t s_u8_gui_task_period_ms = 100U;
@@ -168,6 +172,16 @@ void IM_peripheral_init(void) {
   MX_TIM2_Init();
 
   USB_init();
+
+  HAL_UARTEx_ReceiveToIdle_DMA(&huart7,
+                               (uint8_t *)&s_u8_comm_rx_data_buff_0[0U],
+                               (uint16_t)MAX_USB_PROTOCOL_SIZE);
+  HAL_UARTEx_ReceiveToIdle_DMA(&huart2,
+                               (uint8_t *)&s_u8_comm_rx_data_buff_0[0U],
+                               (uint16_t)MAX_USB_PROTOCOL_SIZE);
+
+  HAL_I2C_Slave_Receive_DMA(&hi2c4, (uint8_t *)&s_u8_comm_rx_data_buff_0[0U],
+                            (uint16_t)MAX_USB_PROTOCOL_SIZE);
 }
 
 /**
@@ -184,17 +198,19 @@ void IM_system_init(void) {
   tft_init();
   lv_init();
 
-  s_gSystem.comm_protocol.p_rx_buff_0 = &s_u8_comm_rx_data_buff_0[0U];
-  s_gSystem.comm_protocol.p_rx_buff_1 = &s_u8_comm_rx_data_buff_1[0U];
+  s_gSystem.p_comm_protocol->p_rx_buff_0 = &s_u8_comm_rx_data_buff_0[0U];
+  s_gSystem.p_comm_protocol->p_rx_buff_1 = &s_u8_comm_rx_data_buff_1[0U];
 
-  s_gSystem.comm_protocol.p_tx_buff = &s_u8_comm_tx_data_buff[0U];
+  s_gSystem.p_comm_protocol->p_tx_buff = &s_u8_comm_tx_data_buff[0U];
 
-  s_gSystem.comm_protocol.active_buff = COMM_ACTIVE_BUFF_0;
-  s_gSystem.comm_protocol.type = COMM_PROTOCOL_TYPE_UART;
-  s_gSystem.comm_protocol.rx_status = COMM_STATUS_IDLE;
-  s_gSystem.comm_protocol.tx_status = COMM_STATUS_IDLE;
+  s_gSystem.p_comm_protocol->active_buff = COMM_ACTIVE_BUFF_0;
+  /*TODO: Type will selected by user from gui.*/
+  s_gSystem.p_comm_protocol->type = COMM_PROTOCOL_TYPE_UART;
 
-  init_comm_protocol_handler(&s_gSystem.comm_protocol);
+  s_gSystem.p_comm_protocol->rx_status = COMM_STATUS_IDLE;
+  s_gSystem.p_comm_protocol->tx_status = COMM_STATUS_IDLE;
+
+  init_comm_protocol_handler(s_gSystem.p_comm_protocol);
 }
 
 /**

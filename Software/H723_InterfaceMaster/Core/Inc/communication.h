@@ -25,9 +25,10 @@
 
 /**
  * @def MAX_COMM_PROTOCOL_SIZE
- * @brief This macro defines maximum communication protocol size in byte.
+ * @brief This macro defines maximum communication protocol size in byte. STM32
+ * MCU's sends 64 byte on full speed mode.
  * */
-#define MAX_COMM_PROTOCOL_SIZE 64U
+#define MAX_USB_PROTOCOL_SIZE 64U
 
 /*
   ==============================================================================
@@ -75,7 +76,7 @@ typedef enum {
   COMM_ACTIVE_BUFF_1 = 1U,
 } CommProtocolActiveBuff_e;
 
-typedef struct {
+typedef struct CommProtocol_t {
   CommProtocolType_e type;
   CommProtocolActiveBuff_e active_buff;
   uint8_t *p_tx_buff;

@@ -14,7 +14,13 @@
 
 #ifndef INC_TASKS_H_
 #define INC_TASKS_H_
-
+/**
+ * @brief Forward declaration for the Communication Protocol structure.
+ *
+ * @details Declared as an incomplete type.This structure definition available
+ * in "comminucation.h".
+ */
+typedef struct CommProtocol_t CommProtocol_t;
 /**
  * @brief  This structure holds the entire system status information and
  * configuration.
@@ -24,9 +30,9 @@
  * system.
  */
 
-typedef struct {
+typedef struct SystemInstance_t {
   double ambient_temp;
-  CommProtocol_t comm_protocol;
+  CommProtocol_t *p_comm_protocol;
 } SystemInstance_t;
 
 void IM_peripheral_init(void);

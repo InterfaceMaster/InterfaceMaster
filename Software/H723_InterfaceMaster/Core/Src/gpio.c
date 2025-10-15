@@ -73,11 +73,11 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(SPI2_CS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : SDMMC2_CARD_DET_Pin */
-  GPIO_InitStruct.Pin = SDMMC2_CARD_DET_Pin;
+  /*Configure GPIO pins : SDMMC2_CARD_DET_Pin BOOTLOADER_PIN_Pin */
+  GPIO_InitStruct.Pin = SDMMC2_CARD_DET_Pin|BOOTLOADER_PIN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(SDMMC2_CARD_DET_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : SPI1_PSRAM_CS_Pin */
   GPIO_InitStruct.Pin = SPI1_PSRAM_CS_Pin;

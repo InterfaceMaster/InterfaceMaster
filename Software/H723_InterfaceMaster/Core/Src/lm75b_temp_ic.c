@@ -118,7 +118,7 @@ LM75B_Status_e lm75b_init(void) {
   I2C_DeviceStatus_e status;
   status = IM_I2C_bus_scanner(I2C_ADDRESS);
 
-  if (LM75B_OK != status) {
+  if ((uint8_t)LM75B_OK != status) {
     return LM75B_ERROR;
   }
 

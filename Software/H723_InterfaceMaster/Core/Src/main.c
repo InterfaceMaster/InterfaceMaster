@@ -88,7 +88,7 @@ int main(void)
   /* Initialize all configured peripherals */
   /* USER CODE BEGIN 2 */
   IM_peripheral_init();
-  IM_library_init();
+  IM_system_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
