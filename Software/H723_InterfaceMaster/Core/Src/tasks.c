@@ -16,28 +16,28 @@
 
 #include "adc.h"
 #include "bdma.h"
-#include "board_options.h"
-#include "communication.h"
 #include "dma.h"
 #include "fdcan.h"
 #include "fmc.h"
 #include "gpio.h"
 #include "i2c.h"
-#include "lm75b_temp_ic.h"
 #include "ltdc.h"
 #include "main.h"
 #include "rtc.h"
 #include "sdmmc.h"
 #include "spi.h"
-#include "tasks.h"
 #include "tim.h"
 #include "usart.h"
 #include "usb_device.h"
 #include "usb_host.h"
 
+#include "board_options.h"
+#include "communication.h"
 #include "ft5426_touch_ic.h"
+#include "lm75b_temp_ic.h"
 #include "logger_fs.h"
 #include "lvgl.h"
+#include "tasks.h"
 #include "tft.h"
 /*
   ==============================================================================
@@ -198,10 +198,12 @@ void IM_system_init(void) {
   tft_init();
   lv_init();
 
-  s_gSystem.p_comm_protocol->p_rx_buff_0 = &s_u8_comm_rx_data_buff_0[0U];
-  s_gSystem.p_comm_protocol->p_rx_buff_1 = &s_u8_comm_rx_data_buff_1[0U];
+  s_gSystem.p_comm_protocol->p_rx_buff_0 =
+      (uint8_t *)&s_u8_comm_rx_data_buff_0[0U];
+  s_gSystem.p_comm_protocol->p_rx_buff_1 =
+      (uint8_t *)&s_u8_comm_rx_data_buff_1[0U];
 
-  s_gSystem.p_comm_protocol->p_tx_buff = &s_u8_comm_tx_data_buff[0U];
+  s_gSystem.p_comm_protocol->p_tx_buff = (uint8_t *)&s_u8_comm_tx_data_buff[0U];
 
   s_gSystem.p_comm_protocol->active_buff = COMM_ACTIVE_BUFF_0;
   /*TODO: Type will selected by user from gui.*/

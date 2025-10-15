@@ -15,6 +15,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "i2c.h"
+#include "spi.h"
 #include "usart.h"
 #include "usb_host.h"
 #include "usbd_cdc_if.h"
