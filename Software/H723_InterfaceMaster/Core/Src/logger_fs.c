@@ -18,30 +18,29 @@
 #define LFS_FAIL -1
 #define LOGGER_FS_BUSY_TIMEOUT_MS 2U
 
-#define UART_DATA_LOG_DIR "UART_DATA_DIR"
-#define SPI_DATA_LOG_DIR "SPI_DATA_DIR"
-#define I2C_DATA_LOG_DIR "I2C_DATA_DIR"
-#define CAN_DATA_LOG_DIR "CAN_DATA_DIR"
-
-#define UART_DATA_LOG_FILE "UART_DATA_FILE"
-#define SPI_DATA_LOG_FILE "SPI_DATA_FILE"
-#define I2C_DATA_LOG_FILE "I2C_DATA_FILE"
-#define CAN_DATA_LOG_FILE "CAN_DATA_FILE"
-
 /*
   ==============================================================================
                       ##### STATIC VARIABLES #####
   ==============================================================================
 
   */
-
 static lfs_t s_logger_file_system;
 static lfs_file_t s_data_log_file;
 
-static lfs_dir_t s_uart_data_dir;
-static lfs_dir_t s_spi_data_dir;
-static lfs_dir_t s_i2c_data_dir;
-static lfs_dir_t s_can_data_dir;
+static const char *s_uart_data_dir = "UART_DATA_DIR";
+static const char *s_spi_data_dir = "SPI_DATA_DIR";
+static const char *s_i2c_data_dir = "I2C_DATA_DIR";
+static const char *s_can_data_dir = "CAN_DATA_DIR";
+
+static const char *s_uart_data_file = "UART_DATA_FILE";
+static const char *s_spi_data_file = "SPI_DATA_FILE";
+static const char *s_i2c_data_file = "I2C_DATA_FILE";
+static const char *s_can_data_file = "CAN_DATA_FILE";
+
+static lfs_dir_t s_lfs_uart_dir;
+static lfs_dir_t s_lfs_spi_dir;
+static lfs_dir_t s_lfs_i2c_dir;
+static lfs_dir_t s_lfs_can_dir;
 
 /*
   ==============================================================================
@@ -301,30 +300,34 @@ logger_fs_write_received_data(CommProtocol_t *p_comm_protocol) {
   switch (p_comm_protocol->type) {
   case COMM_PROTOCOL_TYPE_UART:
     status = s_logger_fs_write_file(
-        &s_uart_data_dir, UART_DATA_LOG_DIR, UART_DATA_LOG_FILE,
-        &p_comm_protocol->p_tx_buff[0U], MAX_USB_PROTOCOL_SIZE);
+        &s_lfs_uart_dir, (const uint8_t *)s_uart_data_dir,
+        (const uint8_t *)s_uart_data_file, &p_comm_protocol->p_tx_buff[0U],
+        MAX_USB_PROTOCOL_SIZE);
     break;
   case COMM_PROTOCOL_TYPE_I2C:
     status = s_logger_fs_write_file(
-        &s_i2c_data_dir, I2C_DATA_LOG_DIR, I2C_DATA_LOG_FILE,
-        &p_comm_protocol->p_tx_buff[0U], MAX_USB_PROTOCOL_SIZE);
+        &s_lfs_i2c_dir, (const uint8_t *)s_i2c_data_dir,
+        (const uint8_t *)s_i2c_data_file, &p_comm_protocol->p_tx_buff[0U],
+        MAX_USB_PROTOCOL_SIZE);
     break;
   case COMM_PROTOCOL_TYPE_SPI:
     status = s_logger_fs_write_file(
-        &s_uart_data_dir, SPI_DATA_LOG_DIR, SPI_DATA_LOG_FILE,
-        &p_comm_protocol->p_tx_buff[0U], MAX_USB_PROTOCOL_SIZE);
+        &s_lfs_spi_dir, (const uint8_t *)s_spi_data_dir,
+        (const uint8_t *)s_spi_data_file, &p_comm_protocol->p_tx_buff[0U],
+        MAX_USB_PROTOCOL_SIZE);
     break;
   case COMM_PROTOCOL_TYPE_CAN:
     status = s_logger_fs_write_file(
-        &s_can_data_dir, CAN_DATA_LOG_DIR, CAN_DATA_LOG_FILE,
-        &p_comm_protocol->p_tx_buff[0U], MAX_USB_PROTOCOL_SIZE);
+        &s_lfs_can_dir, (const uint8_t *)s_can_data_dir,
+        (const uint8_t *)s_can_data_file, &p_comm_protocol->p_tx_buff[0U],
+        MAX_USB_PROTOCOL_SIZE);
     break;
   default:
     return LFS_LOGGER_ERROR;
     break;
   }
 
-  if (LFS_LOGGER_ERROR = status) {
+  if (LFS_LOGGER_ERROR == status) {
     return LFS_LOGGER_ERROR;
   }
   return LFS_LOGGER_OK;
@@ -361,25 +364,25 @@ LFS_Logger_Status_e logger_fs_init(void) {
      * format*/
   }
 
-  status = lfs_mkdir(&s_logger_file_system, UART_DATA_LOG_DIR);
+  status = lfs_mkdir(&s_logger_file_system, (const char *)s_uart_data_dir);
 
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;
   }
 
-  status = lfs_mkdir(&s_logger_file_system, SPI_DATA_LOG_DIR);
+  status = lfs_mkdir(&s_logger_file_system, (const char *)s_spi_data_dir);
 
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;
   }
 
-  status = lfs_mkdir(&s_logger_file_system, I2C_DATA_LOG_DIR);
+  status = lfs_mkdir(&s_logger_file_system, (const char *)s_i2c_data_dir);
 
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;
   }
 
-  status = lfs_mkdir(&s_logger_file_system, CAN_DATA_DIR);
+  status = lfs_mkdir(&s_logger_file_system, (const char *)s_can_data_dir);
 
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;

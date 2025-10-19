@@ -5,6 +5,8 @@
  *      Author: MTA
  */
 
+#include "gui_defines.h"
+
 #include "lvgl.h"
 
 #include <stdint.h>
@@ -42,16 +44,17 @@ void IM_gui_create_screen(GUI_System_t *p_gui) {
   }
 
   p_gui->p_current_screen_obj = lv_obj_create(lv_screen_active());
-  lv_obj_set_size(p_gui->active_screen, tft_ver_res, tft_hor_res);
+  lv_obj_set_size(p_gui->p_current_screen_obj, (int32_t)tft_ver_res,
+                  (int32_t)tft_hor_res);
 
-  lv_screen_load(p_gui->active_screen);
+  lv_scr_load(p_gui->p_current_screen_obj);
 
   if (NULL != p_gui->p_screen_timer) {
     lv_timer_create(p_gui->p_screen_timer_CB, SCREEN_TIMER_PERIOD, NULL);
   }
 
   /*New screen also the previous screen after load the screen.*/
-  if (NULL != p_gui->active_screen) {
+  if (NULL != p_gui->p_current_screen_obj) {
     p_gui->p_previous_screen_obj = p_gui->p_current_screen_obj;
   }
 }

@@ -15,6 +15,14 @@
 #include "lfs.h"
 #include <stdint.h>
 
+/**
+ * @brief Forward declaration for the Communication Protocol structure.
+ *
+ * @details Declared as an incomplete type.This structure definition available
+ * in "comminucation.h".
+ */
+typedef struct CommProtocol_t CommProtocol_t;
+
 typedef enum {
   LFS_LOGGER_OK = 0U,
   LFS_LOGGER_ERROR = 1U,
