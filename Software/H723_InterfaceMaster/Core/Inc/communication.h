@@ -89,12 +89,15 @@ typedef struct CommProtocol_t {
 } CommProtocol_t;
 
 CommProtocolType_e get_comm_protocol_type(void);
+
 uint8_t *get_comm_protocol_rx_buff(void);
 uint8_t *get_comm_protocol_tx_buff(void);
+
 uint8_t get_comm_protocol_rx_size(void);
 uint8_t get_comm_protocol_tx_size(void);
 
-void flush_comm_protocol_rx_buff(uint8_t *p_buff);
+void flush_comm_prtocol_tx_buff(void);
+
 void set_comm_protocol_rx_size(uint8_t size);
 void set_comm_protocol_tx_size(uint8_t size);
 

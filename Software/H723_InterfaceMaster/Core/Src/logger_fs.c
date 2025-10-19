@@ -296,9 +296,7 @@ logger_fs_write_received_data(CommProtocol_t *p_comm_protocol) {
     return LFS_LOGGER_ERROR;
   }
 
-  uint8_t *active_buff = get_comm_protocol_rx_buff();
-
-  memcpy(&p_comm_protocol->p_tx_buff[0U], active_buff, MAX_USB_PROTOCOL_SIZE);
+  flush_comm_prtocol_tx_buff();
 
   switch (p_comm_protocol->type) {
   case COMM_PROTOCOL_TYPE_UART:

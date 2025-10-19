@@ -21,6 +21,16 @@
  * in "comminucation.h".
  */
 typedef struct CommProtocol_t CommProtocol_t;
+
+/**
+ * @brief Forward declaration for the GUI structure.
+ *
+ * @details Declared as an incomplete type.This structure definition available
+ * in "gui_defines.h".
+ */
+
+typedef struct GUI_System_t GUI_System_t;
+
 /**
  * @brief  This structure holds the entire system status information and
  * configuration.
@@ -32,6 +42,7 @@ typedef struct CommProtocol_t CommProtocol_t;
 
 typedef struct SystemInstance_t {
   double ambient_temp;
+  GUI_System_t *p_GUI;
   CommProtocol_t *p_comm_protocol;
 } SystemInstance_t;
 

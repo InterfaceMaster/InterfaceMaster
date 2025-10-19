@@ -170,6 +170,16 @@ uint8_t get_comm_protocol_tx_size(void) {
 }
 
 /**
+ *@brief This function checks the communication protocol state.
+ *@param
+ *@retVal None.
+ */
+
+void set_comm_protocol_receive_state(CommProtocolStatus_e state) {
+  s_comm_protocol_handler.rx_status = state;
+}
+
+/**
  * @brief This function gets communication protocol type.
  * @attention Any modification to this function not requires.
  * @param Type of communication protocol.
@@ -177,6 +187,18 @@ uint8_t get_comm_protocol_tx_size(void) {
  */
 CommProtocolType_e get_comm_protocol_type(void) {
   return s_comm_protocol_handler.type;
+}
+
+/**
+ *@brief This function fills transmit data with received data.
+ *@param None.
+ *@retVal None.
+ */
+
+void flush_comm_prtocol_tx_buff(void) {
+  uint8_t *p_active_buff = get_comm_protocol_rx_buff();
+  memcpy(&s_comm_protocol_handler.p_tx_buff[0U], p_active_buff,
+         MAX_USB_PROTOCOL_SIZE);
 }
 
 /**
@@ -195,16 +217,6 @@ void init_comm_protocol_handler(CommProtocol_t *comm_protocol) {
   s_set_comm_protocol_rx_buff_addrs(&comm_protocol->p_rx_buff_0[0U],
                                     &comm_protocol->p_rx_buff_1[0U]);
   s_set_comm_protocol_tx_buff_addrs(&comm_protocol->p_tx_buff[0U]);
-}
-
-/**
- *@brief This function checks the communication protocol state.
- *@param
- *@retVal None.
- */
-
-void set_comm_protocol_receive_state(CommProtocolStatus_e state) {
-  s_comm_protocol_handler.rx_status = state;
 }
 
 /**
@@ -237,9 +249,7 @@ void USB_send_data(void) {
 
   if (COMM_STATUS_OK == s_comm_protocol_handler.rx_status) {
 
-    data_buff = get_comm_protocol_rx_buff();
-    memcpy(&s_comm_protocol_handler.p_tx_buff[0U], data_buff,
-           MAX_USB_PROTOCOL_SIZE);
+    flush_comm_prtocol_tx_buff();
 
     status = CDC_Transmit_HS(&s_comm_protocol_handler.p_tx_buff[0U],
                              MAX_USB_PROTOCOL_SIZE);
