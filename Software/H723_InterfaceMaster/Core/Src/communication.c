@@ -231,9 +231,26 @@ void deinit_comm_protocol_handler(void) {
  * @retVal None.
  */
 void USB_send_data(void) {
-  // s_comm_protocol_handler.p_tx_buff =
-  if (0U != s_comm_protocol_handler.u8_rx_size) {
-    //    CDC_Transmit_HS(Buf, Len)
+
+  uint8_t *data_buff = NULL;
+  uint8_t status;
+
+  if (COMM_STATUS_OK == s_comm_protocol_handler.rx_status) {
+
+    data_buff = get_comm_protocol_rx_buff();
+    memcpy(&s_comm_protocol_handler.p_tx_buff[0U], data_buff,
+           MAX_USB_PROTOCOL_SIZE);
+
+    status = CDC_Transmit_HS(&s_comm_protocol_handler.p_tx_buff[0U],
+                             MAX_USB_PROTOCOL_SIZE);
+
+    if ((uint8_t)USBD_OK != status) {
+      s_comm_protocol_handler.tx_status = COMM_STATUS_FAIL;
+      return;
+      /*TODO give error from gui*/
+    } else {
+      s_comm_protocol_handler.tx_status = COMM_STATUS_OK;
+    }
   }
 }
 
@@ -261,8 +278,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
 
         s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
 
-        s_comm_protocol_handler.p_rx_buff_0[62U] = '\r';
-        s_comm_protocol_handler.p_rx_buff_0[63U] = '\n';
+        *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
+        *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
 
         s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 
@@ -277,8 +294,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
 
         s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
 
-        s_comm_protocol_handler.p_rx_buff_1[62U] = '\r';
-        s_comm_protocol_handler.p_rx_buff_1[63U] = '\n';
+        *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
+        *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
 
         s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 
@@ -308,8 +325,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
 
         s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
 
-        s_comm_protocol_handler.p_rx_buff_0[62U] = '\r';
-        s_comm_protocol_handler.p_rx_buff_0[63U] = '\n';
+        *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
+        *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
 
         s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 
@@ -324,8 +341,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
 
         s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
 
-        s_comm_protocol_handler.p_rx_buff_1[62U] = '\r';
-        s_comm_protocol_handler.p_rx_buff_1[63U] = '\n';
+        *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
+        *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
 
         s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 
@@ -365,8 +382,8 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c) {
 
       s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
 
-      s_comm_protocol_handler.p_rx_buff_0[62U] = '\r';
-      s_comm_protocol_handler.p_rx_buff_0[63U] = '\n';
+      *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
 
       s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 
@@ -381,8 +398,8 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c) {
 
       s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
 
-      s_comm_protocol_handler.p_rx_buff_1[62U] = '\r';
-      s_comm_protocol_handler.p_rx_buff_1[63U] = '\n';
+      *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
 
       s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 
@@ -420,8 +437,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 
       s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
 
-      s_comm_protocol_handler.p_rx_buff_0[62U] = '\r';
-      s_comm_protocol_handler.p_rx_buff_0[63U] = '\n';
+      *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
 
       s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 
@@ -435,8 +452,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 
       s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
 
-      s_comm_protocol_handler.p_rx_buff_1[62U] = '\r';
-      s_comm_protocol_handler.p_rx_buff_1[63U] = '\n';
+      *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
 
       s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 

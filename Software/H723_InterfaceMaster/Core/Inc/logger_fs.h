@@ -21,10 +21,6 @@ typedef enum {
 
 } LFS_Logger_Status_e;
 
-LFS_Logger_Status_e logger_fs_take_log(const uint8_t *path,
-                                       const uint8_t *data_buffer,
-                                       const uint32_t size);
-
 LFS_Logger_Status_e logger_fs_delete_file(const uint8_t *path);
 
 LFS_Logger_Status_e logger_fs_read_file(lfs_dir_t *p_dir,
@@ -32,13 +28,8 @@ LFS_Logger_Status_e logger_fs_read_file(lfs_dir_t *p_dir,
                                         const uint8_t *p_file_name,
                                         const uint32_t size,
                                         uint8_t *data_buffer);
-
-LFS_Logger_Status_e logger_fs_write_file(lfs_dir_t *p_dir,
-                                         const uint8_t *p_dir_name,
-                                         const uint8_t *p_file_name,
-                                         const uint8_t *p_data_buffer,
-                                         const uint32_t size);
-
+LFS_Logger_Status_e
+logger_fs_write_received_data(CommProtocol_t *p_comm_protocol);
 LFS_Logger_Status_e logger_fs_init(void);
 
 #endif /* INC_LOGGER_FS_H_ */

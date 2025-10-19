@@ -9,6 +9,7 @@
  */
 
 #include "logger_fs.h"
+#include "communication.h"
 #include "lfs.h"
 #include "main.h"
 #include "w25q_flash_mem.h"
@@ -17,10 +18,15 @@
 #define LFS_FAIL -1
 #define LOGGER_FS_BUSY_TIMEOUT_MS 2U
 
-#define UART_DATA_LOG_DIR "UART_DATA"
-#define SPI_DATA_LOG_DIR "SPI_DATA"
-#define I2C_DATA_LOG_DIR "I2C_DATA"
-#define CAN_DATA_DIR "CAN_DATA"
+#define UART_DATA_LOG_DIR "UART_DATA_DIR"
+#define SPI_DATA_LOG_DIR "SPI_DATA_DIR"
+#define I2C_DATA_LOG_DIR "I2C_DATA_DIR"
+#define CAN_DATA_LOG_DIR "CAN_DATA_DIR"
+
+#define UART_DATA_LOG_FILE "UART_DATA_FILE"
+#define SPI_DATA_LOG_FILE "SPI_DATA_FILE"
+#define I2C_DATA_LOG_FILE "I2C_DATA_FILE"
+#define CAN_DATA_LOG_FILE "CAN_DATA_FILE"
 
 /*
   ==============================================================================
@@ -56,7 +62,7 @@ static int s_logger_fs_page_program(const struct lfs_config *c,
 
 static int s_logger_fs_sync(const struct lfs_config *c);
 
-const struct lfs_config cfg = {
+const struct lfs_config config = {
     .read = s_logger_fs_data_read,
     .prog = s_logger_fs_page_program,
     .erase = s_logger_fs_block_erase,
@@ -132,13 +138,6 @@ static int s_logger_fs_sync(const struct lfs_config *cfg) {
   return 0;
 }
 
-/*
-  ==============================================================================
-                      ##### GLOBAL FUNCTIONS #####
-  ==============================================================================
-
-  */
-
 /**
  * @brief This function writes the related data to given path.
  * @param  p_dir Address of directory handler.
@@ -148,11 +147,11 @@ static int s_logger_fs_sync(const struct lfs_config *cfg) {
  * @retval Status of write success.
  */
 
-LFS_Logger_Status_e logger_fs_write_file(lfs_dir_t *p_dir,
-                                         const uint8_t *p_dir_name,
-                                         const uint8_t *p_file_name,
-                                         const uint8_t *p_data_buffer,
-                                         const uint32_t size) {
+static LFS_Logger_Status_e s_logger_fs_write_file(lfs_dir_t *p_dir,
+                                                  const uint8_t *p_dir_name,
+                                                  const uint8_t *p_file_name,
+                                                  const uint8_t *p_data_buffer,
+                                                  const uint32_t size) {
 
   if ((NULL == p_file_name) || (NULL == p_data_buffer) || (0U == size)) {
     return LFS_LOGGER_ERROR;
@@ -197,6 +196,13 @@ LFS_Logger_Status_e logger_fs_write_file(lfs_dir_t *p_dir,
 
   return LFS_LOGGER_OK;
 }
+
+/*
+  ==============================================================================
+                      ##### GLOBAL FUNCTIONS #####
+  ==============================================================================
+
+  */
 
 /**
  * @brief This function deletes the file.
@@ -275,6 +281,58 @@ LFS_Logger_Status_e logger_fs_read_file(lfs_dir_t *p_dir,
 }
 
 /**
+ *@brief This function writes received data to NOR flash.
+ *@param comm_protocol Communication protocol handler pointer.
+ *@retVal status Status of write operation.
+
+ */
+
+LFS_Logger_Status_e
+logger_fs_write_received_data(CommProtocol_t *p_comm_protocol) {
+
+  LFS_Logger_Status_e status = LFS_LOGGER_OK;
+
+  if (NULL == p_comm_protocol) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  uint8_t *active_buff = get_comm_protocol_rx_buff();
+
+  memcpy(&p_comm_protocol->p_tx_buff[0U], active_buff, MAX_USB_PROTOCOL_SIZE);
+
+  switch (p_comm_protocol->type) {
+  case COMM_PROTOCOL_TYPE_UART:
+    status = s_logger_fs_write_file(
+        &s_uart_data_dir, UART_DATA_LOG_DIR, UART_DATA_LOG_FILE,
+        &p_comm_protocol->p_tx_buff[0U], MAX_USB_PROTOCOL_SIZE);
+    break;
+  case COMM_PROTOCOL_TYPE_I2C:
+    status = s_logger_fs_write_file(
+        &s_i2c_data_dir, I2C_DATA_LOG_DIR, I2C_DATA_LOG_FILE,
+        &p_comm_protocol->p_tx_buff[0U], MAX_USB_PROTOCOL_SIZE);
+    break;
+  case COMM_PROTOCOL_TYPE_SPI:
+    status = s_logger_fs_write_file(
+        &s_uart_data_dir, SPI_DATA_LOG_DIR, SPI_DATA_LOG_FILE,
+        &p_comm_protocol->p_tx_buff[0U], MAX_USB_PROTOCOL_SIZE);
+    break;
+  case COMM_PROTOCOL_TYPE_CAN:
+    status = s_logger_fs_write_file(
+        &s_can_data_dir, CAN_DATA_LOG_DIR, CAN_DATA_LOG_FILE,
+        &p_comm_protocol->p_tx_buff[0U], MAX_USB_PROTOCOL_SIZE);
+    break;
+  default:
+    return LFS_LOGGER_ERROR;
+    break;
+  }
+
+  if (LFS_LOGGER_ERROR = status) {
+    return LFS_LOGGER_ERROR;
+  }
+  return LFS_LOGGER_OK;
+}
+
+/**
  * @brief This function initialize the logger file system.
  * @param  None.
  * @retval Status of initialization success.
@@ -290,16 +348,16 @@ LFS_Logger_Status_e logger_fs_init(void) {
     return LFS_LOGGER_ERROR;
   }
 
-  int status = lfs_mount(&s_logger_file_system, &cfg);
+  int status = lfs_mount(&s_logger_file_system, &config);
 
   if (LFS_ERR_NOENT == status) {
-    status = lfs_format(&s_logger_file_system, &cfg);
+    status = lfs_format(&s_logger_file_system, &config);
 
     if (LFS_ERR_OK != status) {
       return LFS_LOGGER_ERROR;
     }
 
-    status = lfs_mount(&s_logger_file_system, &cfg);
+    status = lfs_mount(&s_logger_file_system, &config);
   } else {
     /*TODO: File system error give warning and take permission for memory
      * format*/
