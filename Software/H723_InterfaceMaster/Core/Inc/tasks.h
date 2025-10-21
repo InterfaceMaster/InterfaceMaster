@@ -32,6 +32,18 @@ typedef struct CommProtocol_t CommProtocol_t;
 typedef struct GUI_System_t GUI_System_t;
 
 /**
+ *@brief This enumaration defines the device work mode.
+ @attention Any modification to this enumaration requires analysis the entire
+ * system.
+ */
+
+typedef enum {
+  WORK_MODE_IDLE = 0U,
+  WORK_MODE_USB_BRIDGE = 1U,
+  WORK_MODE_EXPORT_DATA = 2U,
+} WorkMode_e;
+
+/**
  * @brief  This structure holds the entire system status information and
  * configuration.
  * @details This structure centralizes data related the current state of all
@@ -44,6 +56,7 @@ typedef struct SystemInstance_t {
   double ambient_temp;
   GUI_System_t *p_GUI;
   CommProtocol_t *p_comm_protocol;
+  WorkMode_e device_work_mode;
 } SystemInstance_t;
 
 void IM_peripheral_init(void);

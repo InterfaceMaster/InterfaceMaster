@@ -5,8 +5,10 @@
  *      Author: MTA
  */
 
+#include "gui_helper.h"
 #include "gui.h"
 #include "lvgl.h"
+#include "tasks.h"
 
 #include <stdint.h>
 
@@ -27,35 +29,36 @@ static const uint16_t tft_ver_res = 272U;
  *@retVal None.
  */
 
-void IM_gui_create_screen(GUI_System_t *p_gui) {
+void IM_gui_create_screen(SystemInstance_t *p_sub_system) {
 
-  if (NULL == p_gui) {
+  if (NULL == p_sub_system) {
     return;
   }
   /*If previous screen is avaliable delete first then create new screen.*/
-  if (NULL != p_gui->p_previous_screen_obj) {
+  if (NULL != p_sub_system->p_GUI->p_previous_screen_obj) {
     /*Check timer and delete*/
-    if (NULL != p_gui->p_screen_timer) {
-      lv_timer_delete(p_gui->p_screen_timer);
+    if (NULL != p_sub_system->p_GUI->p_screen_timer) {
+      lv_timer_delete(p_sub_system->p_GUI->p_screen_timer);
     }
     /*After timer delete, delete screen too.*/
-    lv_obj_delete(p_gui->p_previous_screen_obj);
+    lv_obj_delete(p_sub_system->p_GUI->p_previous_screen_obj);
   }
 
-  p_gui->p_current_screen_obj = lv_obj_create(lv_screen_active());
-  lv_obj_set_size(p_gui->p_current_screen_obj, (int32_t)tft_ver_res,
-                  (int32_t)tft_hor_res);
+  p_sub_system->p_GUI->p_current_screen_obj = lv_obj_create(lv_screen_active());
+  lv_obj_set_size(p_sub_system->p_GUI->p_current_screen_obj,
+                  (int32_t)tft_ver_res, (int32_t)tft_hor_res);
 
-  lv_screen_load(p_gui->p_current_screen_obj);
+  lv_screen_load(p_sub_system->p_GUI->p_current_screen_obj);
 
-  if (NULL != p_gui->p_screen_timer_CB) {
-    p_gui->p_screen_timer =
-        lv_timer_create(p_gui->p_screen_timer_CB, SCREEN_TIMER_PERIOD, NULL);
+  if (NULL != p_sub_system->p_GUI->p_screen_timer_CB) {
+    p_sub_system->p_GUI->p_screen_timer = lv_timer_create(
+        p_sub_system->p_GUI->p_screen_timer_CB, SCREEN_TIMER_PERIOD, NULL);
   }
 
   /*New screen also the previous screen after load the screen.*/
-  if (NULL != p_gui->p_current_screen_obj) {
-    p_gui->p_previous_screen_obj = p_gui->p_current_screen_obj;
+  if (NULL != p_sub_system->p_GUI->p_current_screen_obj) {
+    p_sub_system->p_GUI->p_previous_screen_obj =
+        p_sub_system->p_GUI->p_current_screen_obj;
   }
 }
 
@@ -65,18 +68,18 @@ void IM_gui_create_screen(GUI_System_t *p_gui) {
  *@retVal None.
  */
 
-void IM_gui_change_screen(GUI_System_t *p_gui) {
+void IM_gui_change_screen(SystemInstance_t *p_sub_system) {
 
-  if (NULL == p_gui) {
+  if (NULL == p_sub_system) {
     return;
   }
 
-  switch (p_gui->active_screen) {
+  switch (p_sub_system->p_GUI->active_screen) {
   case SPLASH_SCREEN:
 
     break;
   case WORK_MODE_SELECT_SCREEN:
-
+    work_mode_screen_init(p_sub_system);
     break;
   case COMM_PROTOCOL_SELECT_SCREEN:
 

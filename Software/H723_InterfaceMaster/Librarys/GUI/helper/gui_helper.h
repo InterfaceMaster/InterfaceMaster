@@ -9,8 +9,12 @@
 #define GUI_HELPER_GUI_HELPER_H_
 
 #include "gui.h"
+#include "tasks.h"
 
-void IM_gui_create_screen(GUI_System_t *p_gui);
-void IM_gui_change_screen(GUI_System_t *p_gui);
+void IM_gui_create_screen(SystemInstance_t *p_sub_system);
+void IM_gui_change_screen(SystemInstance_t *p_sub_system);
+
+void splash_screen_init(SystemInstance_t *p_sub_system);
+void work_mode_screen_init(SystemInstance_t *p_sub_system);
 
 #endif /* GUI_HELPER_GUI_HELPER_H_ */

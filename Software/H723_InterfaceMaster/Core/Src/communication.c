@@ -244,7 +244,6 @@ void deinit_comm_protocol_handler(void) {
  */
 void USB_send_data(void) {
 
-  uint8_t *data_buff = NULL;
   uint8_t status;
 
   if (COMM_STATUS_OK == s_comm_protocol_handler.rx_status) {

@@ -113,7 +113,11 @@ static void s_gui_task_CB(void) { lv_task_handler(); }
  *@param None.
  *@retVal None.
  */
-static void s_usb_task_CB(void) { USB_send_data(); }
+static void s_usb_task_CB(void) {
+  if (WORK_MODE_USB_BRIDGE == s_gSystem.device_work_mode) {
+    USB_send_data();
+  }
+}
 
 /**
  * @brief  This function initializes the MCU USB Device or USB Host based on ID
@@ -209,10 +213,12 @@ void IM_system_init(void) {
 
   s_gSystem.p_comm_protocol->active_buff = COMM_ACTIVE_BUFF_0;
   /*TODO: Type will selected by user from gui.*/
-  s_gSystem.p_comm_protocol->type = COMM_PROTOCOL_TYPE_UART;
+  s_gSystem.p_comm_protocol->type = COMM_PROTOCOL_TYPE_NONE;
 
   s_gSystem.p_comm_protocol->rx_status = COMM_STATUS_IDLE;
   s_gSystem.p_comm_protocol->tx_status = COMM_STATUS_IDLE;
+
+  s_gSystem.device_work_mode = WORK_MODE_IDLE;
 
   init_comm_protocol_handler(s_gSystem.p_comm_protocol);
 }

@@ -8,6 +8,8 @@
 #ifndef GUI_GUI_H_
 #define GUI_GUI_H_
 
+#include "lvgl.h"
+
 typedef enum {
   SPLASH_SCREEN = 0U,
   WORK_MODE_SELECT_SCREEN = 1U,
