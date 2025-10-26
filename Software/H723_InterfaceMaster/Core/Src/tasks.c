@@ -47,7 +47,9 @@
   */
 
 static void s_gui_task_CB(void);
-static void s_usb_task_CB(void);
+static void s_controller_task_CB(void);
+
+static void USB_init(void);
 
 /**
  * @brief  This structure define task config parameters.
@@ -78,11 +80,11 @@ static volatile uint8_t s_u8_comm_rx_data_buff_1[MAX_USB_PROTOCOL_SIZE] = {0U};
 
 static volatile uint8_t s_u8_comm_tx_data_buff[MAX_USB_PROTOCOL_SIZE] = {0U};
 
-static TaskConfig_t s_tasks_config[3U] = {0U};
-static uint8_t s_u8_usb_task_period_ms = 5U;
+static TaskConfig_t s_tasks_config[4U] = {0U};
+
+static uint8_t s_u8_controller_task_period_ms = 5U;
 static uint8_t s_u8_gui_task_period_ms = 10U;
 static uint8_t s_u8_comm_protocol_log_task_ms = 5U;
-
 /*
   ==============================================================================
                       ##### STATIC FUNCTION IMPLEMENTATIONS #####
@@ -109,17 +111,6 @@ static void s_comm_protocol_log_task_CB(void) {
 static void s_gui_task_CB(void) { lv_task_handler(); }
 
 /**
- *@brief This function is USB task callback.
- *@param None.
- *@retVal None.
- */
-static void s_usb_task_CB(void) {
-  if (WORK_MODE_USB_BRIDGE == s_gSystem.device_work_mode) {
-    USB_send_data();
-  }
-}
-
-/**
  * @brief  This function initializes the MCU USB Device or USB Host based on ID
  * 		   pin.
  * @param None.
@@ -139,6 +130,24 @@ static void USB_init(void) {
   default:
     MX_USB_DEVICE_Init();
     break;
+  }
+}
+
+/**
+ *@brief This function is controller task callback.
+ *@param None.
+ *@retVal None.
+ */
+static void s_controller_task_CB(void) {
+
+  if (WORK_MODE_USB_BRIDGE == s_gSystem.device_work_mode) {
+    USB_send_data();
+  } else if (WORK_MODE_EXPORT_DATA == s_gSystem.device_work_mode) {
+    //    export_data();
+  } else if (WORK_MODE_IDLE == s_gSystem.device_work_mode) {
+    /*TODO: give gui error*/
+  } else {
+    /*TODO: give console error hard fault*/
   }
 }
 
@@ -194,7 +203,7 @@ void IM_peripheral_init(void) {
  * @bried Initialize the system librarys.
  * @param None.
  * @retval None.
- * */
+ */
 
 void IM_system_init(void) {
   logger_fs_init();
@@ -230,8 +239,8 @@ void IM_system_init(void) {
  */
 void IM_task_init(void) {
 
-  s_tasks_config[0U].pTask_CB = &s_usb_task_CB;
-  s_tasks_config[0U].u32_period = s_u8_usb_task_period_ms;
+  s_tasks_config[0U].pTask_CB = &s_controller_task_CB;
+  s_tasks_config[0U].u32_period = s_u8_controller_task_period_ms;
 
   s_tasks_config[1U].pTask_CB = &s_gui_task_CB;
   s_tasks_config[1U].u32_period = s_u8_gui_task_period_ms;

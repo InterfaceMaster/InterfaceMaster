@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : usb_host.h
-  * @version        : v1.0_Cube
-  * @brief          : Header for usb_host.c file.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : usb_host.h
+ * @version        : v1.0_Cube
+ * @brief          : Header for usb_host.c file.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
@@ -23,7 +23,7 @@
 #define __USB_HOST__H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -31,26 +31,26 @@
 #include "stm32h7xx_hal.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+//USBH_StatusTypeDef IM_USB_Host_DeInit(void);
 /* USER CODE END INCLUDE */
 
 /** @addtogroup USBH_OTG_DRIVER
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup USBH_HOST USBH_HOST
-  * @brief Host file for Usb otg low level driver.
-  * @{
-  */
+ * @brief Host file for Usb otg low level driver.
+ * @{
+ */
 
 /** @defgroup USBH_HOST_Exported_Variables USBH_HOST_Exported_Variables
-  * @brief Public variables.
-  * @{
-  */
+ * @brief Public variables.
+ * @{
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /** Status of the application. */
 typedef enum {
@@ -58,12 +58,13 @@ typedef enum {
   APPLICATION_START,
   APPLICATION_READY,
   APPLICATION_DISCONNECT
-}ApplicationTypeDef;
+} ApplicationTypeDef;
 
-/** @defgroup USBH_HOST_Exported_FunctionsPrototype USBH_HOST_Exported_FunctionsPrototype
-  * @brief Declaration of public functions for Usb host.
-  * @{
-  */
+/** @defgroup USBH_HOST_Exported_FunctionsPrototype
+ * USBH_HOST_Exported_FunctionsPrototype
+ * @brief Declaration of public functions for Usb host.
+ * @{
+ */
 
 /* Exported functions -------------------------------------------------------*/
 
@@ -73,20 +74,19 @@ void MX_USB_HOST_Init(void);
 void MX_USB_HOST_Process(void);
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* __USB_HOST__H__ */
-

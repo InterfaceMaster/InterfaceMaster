@@ -1,30 +1,30 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : usb_device.c
-  * @version        : v1.0_Cube
-  * @brief          : This file implements the USB Device
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : usb_device.c
+ * @version        : v1.0_Cube
+ * @brief          : This file implements the USB Device
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
 
 #include "usb_device.h"
-#include "usbd_core.h"
-#include "usbd_desc.h"
 #include "usbd_cdc.h"
 #include "usbd_cdc_if.h"
+#include "usbd_core.h"
+#include "usbd_desc.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -55,33 +55,45 @@ USBD_HandleTypeDef hUsbDeviceHS;
  */
 /* USER CODE BEGIN 1 */
 
+/**
+ *@brief This function deinitialized the USB peripheral.
+ *@param None.
+ *@retVal status Status of operation.
+ */
+USBD_StatusTypeDef IM_USB_Device_DeInit(void) {
+
+  USBD_StatusTypeDef status = USBD_OK;
+
+  status = USBD_DeInit(&hUsbDeviceHS);
+
+  if (USBD_OK != status) {
+    return status;
+  }
+  return status;
+}
 /* USER CODE END 1 */
 
 /**
-  * Init USB device Library, add supported class and start the library
-  * @retval None
-  */
-void MX_USB_DEVICE_Init(void)
-{
+ * Init USB device Library, add supported class and start the library
+ * @retval None
+ */
+void MX_USB_DEVICE_Init(void) {
   /* USER CODE BEGIN USB_DEVICE_Init_PreTreatment */
 
   /* USER CODE END USB_DEVICE_Init_PreTreatment */
 
   /* Init Device Library, add supported class and start the library. */
-  if (USBD_Init(&hUsbDeviceHS, &HS_Desc, DEVICE_HS) != USBD_OK)
-  {
+  if (USBD_Init(&hUsbDeviceHS, &HS_Desc, DEVICE_HS) != USBD_OK) {
     Error_Handler();
   }
-  if (USBD_RegisterClass(&hUsbDeviceHS, &USBD_CDC) != USBD_OK)
-  {
+  if (USBD_RegisterClass(&hUsbDeviceHS, &USBD_CDC) != USBD_OK) {
     Error_Handler();
   }
-  if (USBD_CDC_RegisterInterface(&hUsbDeviceHS, &USBD_Interface_fops_HS) != USBD_OK)
-  {
+  if (USBD_CDC_RegisterInterface(&hUsbDeviceHS, &USBD_Interface_fops_HS) !=
+      USBD_OK) {
     Error_Handler();
   }
-  if (USBD_Start(&hUsbDeviceHS) != USBD_OK)
-  {
+  if (USBD_Start(&hUsbDeviceHS) != USBD_OK) {
     Error_Handler();
   }
 
@@ -92,10 +104,9 @@ void MX_USB_DEVICE_Init(void)
 }
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
-
+ * @}
+ */
