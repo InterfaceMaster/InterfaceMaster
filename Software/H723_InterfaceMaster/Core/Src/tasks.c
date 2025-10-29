@@ -124,6 +124,7 @@ static void USB_init(void) {
   switch (usb_init_type) {
   case USB_ID_DEVICE:
     MX_USB_DEVICE_Init();
+    logger_fs_init();
     break;
   case USB_ID_HOST:
     MX_USB_HOST_Init();
@@ -145,7 +146,7 @@ static void s_controller_task_CB(void) {
   if (WORK_MODE_USB_BRIDGE == s_gSystem.device_work_mode) {
     USB_send_data();
   } else if (WORK_MODE_EXPORT_DATA == s_gSystem.device_work_mode) {
-    //    export_data();
+    MX_USB_HOST_Process();
   } else if (WORK_MODE_IDLE == s_gSystem.device_work_mode) {
     /*TODO: give gui error*/
   } else {
@@ -208,7 +209,11 @@ void IM_peripheral_init(void) {
  */
 
 void IM_system_init(void) {
-  logger_fs_init();
+
+  USB_InitType_e usb_init_type = get_usb_ID_state();
+
+  /*TODO handle return val*/
+  /*TODO handle return val*/
 
   lm75b_init();
   ft5426_init();
