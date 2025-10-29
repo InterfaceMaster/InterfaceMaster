@@ -60,6 +60,7 @@ USBH_StatusTypeDef USBH_Get_USB_Status(HAL_StatusTypeDef hal_status);
 
 void HAL_HCD_MspInit(HCD_HandleTypeDef* hcdHandle)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
   if(hcdHandle->Instance==USB_OTG_HS)
   {
@@ -70,7 +71,7 @@ void HAL_HCD_MspInit(HCD_HandleTypeDef* hcdHandle)
   /** Initializes the peripherals clock
   */
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USB;
-    PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_PLL;
+    PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_HSI48;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
       Error_Handler();
@@ -80,10 +81,31 @@ void HAL_HCD_MspInit(HCD_HandleTypeDef* hcdHandle)
   */
     HAL_PWREx_EnableUSBVoltageDetector();
 
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    /**USB_OTG_HS GPIO Configuration
+    PA9     ------> USB_OTG_HS_VBUS
+    PA10     ------> USB_OTG_HS_ID
+    */
+    GPIO_InitStruct.Pin = GPIO_PIN_9;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_10;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF10_OTG1_HS;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
     /* Peripheral clock enable */
     __HAL_RCC_USB_OTG_HS_CLK_ENABLE();
 
     /* Peripheral interrupt init */
+    HAL_NVIC_SetPriority(OTG_HS_EP1_OUT_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(OTG_HS_EP1_OUT_IRQn);
+    HAL_NVIC_SetPriority(OTG_HS_EP1_IN_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(OTG_HS_EP1_IN_IRQn);
     HAL_NVIC_SetPriority(OTG_HS_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(OTG_HS_IRQn);
   /* USER CODE BEGIN USB_OTG_HS_MspInit 1 */
@@ -102,7 +124,17 @@ void HAL_HCD_MspDeInit(HCD_HandleTypeDef* hcdHandle)
     /* Peripheral clock disable */
     __HAL_RCC_USB_OTG_HS_CLK_DISABLE();
 
+    /**USB_OTG_HS GPIO Configuration
+    PA9     ------> USB_OTG_HS_VBUS
+    PA10     ------> USB_OTG_HS_ID
+    */
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9|GPIO_PIN_10);
+
     /* Peripheral interrupt Deinit*/
+    HAL_NVIC_DisableIRQ(OTG_HS_EP1_OUT_IRQn);
+
+    HAL_NVIC_DisableIRQ(OTG_HS_EP1_IN_IRQn);
+
     HAL_NVIC_DisableIRQ(OTG_HS_IRQn);
 
   /* USER CODE BEGIN USB_OTG_HS_MspDeInit 1 */

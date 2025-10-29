@@ -31,7 +31,7 @@
 ****************************************************************************
 */
 
-INCLUDE STM32H723ZGTX_SDRAM.ld
+INCLUDE "../STM32H723ZGTX_SDRAM.ld"
 
 /* Entry Point */
 ENTRY(Reset_Handler)

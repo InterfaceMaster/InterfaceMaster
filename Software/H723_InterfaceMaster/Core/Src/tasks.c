@@ -17,6 +17,7 @@
 #include "adc.h"
 #include "bdma.h"
 #include "dma.h"
+#include "fatfs.h"
 #include "fdcan.h"
 #include "fmc.h"
 #include "gpio.h"
@@ -126,6 +127,7 @@ static void USB_init(void) {
     break;
   case USB_ID_HOST:
     MX_USB_HOST_Init();
+    MX_FATFS_Init();
     break;
   default:
     MX_USB_DEVICE_Init();
