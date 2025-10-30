@@ -42,6 +42,8 @@ static lfs_dir_t s_lfs_spi_dir;
 static lfs_dir_t s_lfs_i2c_dir;
 static lfs_dir_t s_lfs_can_dir;
 
+static struct lfs_info s_file_info;
+
 /*
   ==============================================================================
                       ##### STATIC FUNCTIONS #####
@@ -204,6 +206,53 @@ static LFS_Logger_Status_e s_logger_fs_write_file(lfs_dir_t *p_dir,
   */
 
 /**
+ *@brief This function give size of file.
+ *@param p_comm_protocol Communication protocol handler pointer.
+ *@param p_size Pointer of variable
+ *@retVal Status of operation.
+ */
+
+LFS_Logger_Status_e
+logger_fs_get_file_size(const CommProtocol_t *p_comm_protocol,
+                        uint32_t *p_size) {
+
+  if ((NULL == p_comm_protocol) || (NULL == p_size)) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  int status = LFS_ERR_OK;
+
+  switch (p_comm_protocol->type) {
+  case COMM_PROTOCOL_TYPE_UART:
+    status = lfs_stat(&s_logger_file_system, (const char *)s_uart_data_file,
+                      &s_file_info);
+    break;
+  case COMM_PROTOCOL_TYPE_I2C:
+    status = lfs_stat(&s_logger_file_system, (const char *)s_i2c_data_file,
+                      &s_file_info);
+    break;
+  case COMM_PROTOCOL_TYPE_SPI:
+    status = lfs_stat(&s_logger_file_system, (const char *)s_spi_data_file,
+                      &s_file_info);
+    break;
+  case COMM_PROTOCOL_TYPE_CAN:
+    status = lfs_stat(&s_logger_file_system, (const char *)s_can_data_file,
+                      &s_file_info);
+    break;
+  default:
+    break;
+  }
+
+  if (LFS_ERR_OK != status) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  *p_size = s_file_info.size;
+
+  return LFS_LOGGER_OK;
+}
+
+/**
  * @brief This function deletes the file.
  * @param  p_path Address of directory path string.
  * @retval Status of file delete success.
@@ -225,24 +274,54 @@ LFS_Logger_Status_e logger_fs_delete_file(const uint8_t *p_path) {
 
 /**
  * @brief This function reads the file.
- * @param  p_dir Address of directory handler.
- * @param  p_dir_name Address of directory name string.
- * @param  p_file_name Address of file name string.
  * @param  p_data_buffer Address of buffer data to be write.
+ * @param size Size of writed data.
  * @retval Status of read success.
  */
 
-LFS_Logger_Status_e logger_fs_read_file(lfs_dir_t *p_dir,
-                                        const uint8_t *p_dir_name,
-                                        const uint8_t *p_file_name,
+LFS_Logger_Status_e logger_fs_read_file(const CommProtocol_t *p_comm_protocol,
                                         const uint32_t size,
-                                        uint8_t *data_buffer) {
+                                        uint8_t *p_data_buffer) {
 
-  if ((NULL == p_file_name) || (NULL == data_buffer) || (0U == size)) {
+  if ((NULL == p_comm_protocol) || (NULL == p_data_buffer)) {
     return LFS_LOGGER_ERROR;
   }
+
   int status = LFS_ERR_OK;
   int readed_byte = 0;
+
+  lfs_dir_t *p_dir = NULL;
+  uint8_t *p_dir_name = NULL;
+  uint8_t *p_file_name = NULL;
+
+  switch (p_comm_protocol->type) {
+  case COMM_PROTOCOL_TYPE_NONE:
+    return LFS_LOGGER_ERROR; /*TODO: Add error state*/
+    break;
+  case COMM_PROTOCOL_TYPE_UART:
+    p_dir = &s_lfs_uart_dir;
+    p_dir_name = (uint8_t *)s_uart_data_dir;
+    p_file_name = (uint8_t *)s_uart_data_file;
+    break;
+  case COMM_PROTOCOL_TYPE_I2C:
+    p_dir = &s_lfs_i2c_dir;
+    p_dir_name = (uint8_t *)s_i2c_data_dir;
+    p_file_name = (uint8_t *)s_i2c_data_file;
+    break;
+  case COMM_PROTOCOL_TYPE_SPI:
+    p_dir = &s_lfs_spi_dir;
+    p_dir_name = (uint8_t *)s_spi_data_dir;
+    p_file_name = (uint8_t *)s_spi_data_file;
+    break;
+  case COMM_PROTOCOL_TYPE_CAN:
+    p_dir = &s_lfs_can_dir;
+    p_dir_name = (uint8_t *)s_can_data_dir;
+    p_file_name = (uint8_t *)s_can_data_file;
+    break;
+  default:
+    return LFS_LOGGER_ERROR; /*TODO: Add error state*/
+    break;
+  }
 
   status = lfs_dir_open(&s_logger_file_system, p_dir, (const char *)p_dir_name);
 
@@ -257,8 +336,8 @@ LFS_Logger_Status_e logger_fs_read_file(lfs_dir_t *p_dir,
     return LFS_LOGGER_ERROR;
   }
 
-  readed_byte =
-      lfs_file_read(&s_logger_file_system, &s_data_log_file, data_buffer, size);
+  readed_byte = lfs_file_read(&s_logger_file_system, &s_data_log_file,
+                              p_data_buffer, size);
 
   if (readed_byte < 0) {
     lfs_file_close(&s_logger_file_system, &s_data_log_file);
@@ -281,13 +360,13 @@ LFS_Logger_Status_e logger_fs_read_file(lfs_dir_t *p_dir,
 
 /**
  *@brief This function writes received data to NOR flash.
- *@param comm_protocol Communication protocol handler pointer.
+ *@param p_comm_protocol Communication protocol handler pointer.
  *@retVal status Status of write operation.
 
  */
 
 LFS_Logger_Status_e
-logger_fs_write_received_data(CommProtocol_t *p_comm_protocol) {
+logger_fs_write_received_data(const CommProtocol_t *p_comm_protocol) {
 
   LFS_Logger_Status_e status = LFS_LOGGER_OK;
 

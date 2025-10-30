@@ -91,6 +91,7 @@ int main(void) {
   /* USER CODE BEGIN 2 */
   IM_peripheral_init();
   IM_system_init();
+  IM_task_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */

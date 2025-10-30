@@ -85,23 +85,12 @@ static TaskConfig_t s_tasks_config[4U] = {0U};
 
 static uint8_t s_u8_controller_task_period_ms = 5U;
 static uint8_t s_u8_gui_task_period_ms = 10U;
-static uint8_t s_u8_comm_protocol_log_task_ms = 5U;
 /*
   ==============================================================================
                       ##### STATIC FUNCTION IMPLEMENTATIONS #####
   ==============================================================================
 
   */
-
-/**
- *@brief This function is communication protocol task.
- *@param None.
- *@retVal None.
- */
-
-static void s_comm_protocol_log_task_CB(void) {
-  logger_fs_write_received_data(s_gSystem.p_comm_protocol);
-}
 
 /**
  *@brief This function is UI task callback.
@@ -145,7 +134,9 @@ static void s_controller_task_CB(void) {
 
   if (WORK_MODE_USB_BRIDGE == s_gSystem.device_work_mode) {
     USB_send_data();
+    logger_fs_write_received_data(s_gSystem.p_comm_protocol);
   } else if (WORK_MODE_EXPORT_DATA == s_gSystem.device_work_mode) {
+    IM_USB_FatFS_fill_instance(s_gSystem.p_comm_protocol);
     MX_USB_HOST_Process();
   } else if (WORK_MODE_IDLE == s_gSystem.device_work_mode) {
     /*TODO: give gui error*/
@@ -210,11 +201,6 @@ void IM_peripheral_init(void) {
 
 void IM_system_init(void) {
 
-  USB_InitType_e usb_init_type = get_usb_ID_state();
-
-  /*TODO handle return val*/
-  /*TODO handle return val*/
-
   lm75b_init();
   ft5426_init();
   tft_init();
@@ -251,9 +237,6 @@ void IM_task_init(void) {
 
   s_tasks_config[1U].pTask_CB = &s_gui_task_CB;
   s_tasks_config[1U].u32_period = s_u8_gui_task_period_ms;
-
-  s_tasks_config[2U].pTask_CB = &s_comm_protocol_log_task_CB;
-  s_tasks_config[2U].u32_period = s_u8_comm_protocol_log_task_ms;
 };
 
 /**

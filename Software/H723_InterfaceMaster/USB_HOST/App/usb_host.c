@@ -142,7 +142,7 @@ static void USBH_UserProcess(USBH_HandleTypeDef *phost, uint8_t id) {
 
   case HOST_USER_CONNECTION:
     Appli_state = APPLICATION_START;
-    IM_USB_FatFS_write_data(, );
+    (void)IM_USB_FatFS_write_data();
     break;
 
   default:
