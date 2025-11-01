@@ -27,6 +27,8 @@ static FIL s_uart_data_file;
 static FIL s_spi_data_file;
 static FIL s_i2c_data_file;
 static FIL s_can_data_file;
+static FIL s_rs232_data_file;
+static FIL s_rs485_data_file;
 
 /*
   ==============================================================================
@@ -63,6 +65,9 @@ USBH_FatFS_Status_e IM_USB_FatFS_write_data(void) {
 
   FRESULT fat_fs_status = FR_OK;
 
+  FIL file;
+  TCHAR *path;
+
   UINT file_size = 0U;
   UINT writed_byte_size = 0U;
 
@@ -81,113 +86,53 @@ USBH_FatFS_Status_e IM_USB_FatFS_write_data(void) {
   }
 
   switch (s_p_comm_protocol->type) {
-
   case COMM_PROTOCOL_TYPE_UART:
-
-    fat_fs_status = f_open(&s_uart_data_file, "UART_DATA.txt ",
-                           FA_CREATE_ALWAYS | FA_WRITE);
-
-    if (FR_OK != fat_fs_status) {
-      f_close(&s_uart_data_file);
-      return USB_FatFS_ERROR;
-    }
-
-    fat_fs_status = f_write(&s_uart_data_file, &s_u8_logger_fs_rx_data_buff[0U],
-                            file_size, &writed_byte_size);
-
-    if ((FR_OK != fat_fs_status) || (file_size != writed_byte_size)) {
-      f_close(&s_uart_data_file);
-      return USB_FatFS_ERROR;
-    }
-
-    fat_fs_status = f_close(&s_uart_data_file);
-
-    if (FR_OK != fat_fs_status) {
-      return USB_FatFS_ERROR;
-    }
-
+    file = s_uart_data_file;
+    path = (TCHAR *)"UART_DATA.txt ";
     break;
-
   case COMM_PROTOCOL_TYPE_I2C:
-
-    fat_fs_status =
-        f_open(&s_i2c_data_file, "I2C_DATA.txt", FA_CREATE_ALWAYS | FA_WRITE);
-
-    if (FR_OK != fat_fs_status) {
-      f_close(&s_i2c_data_file);
-      return USB_FatFS_ERROR;
-    }
-
-    fat_fs_status = f_write(&s_i2c_data_file, &s_u8_logger_fs_rx_data_buff[0U],
-                            file_size, &writed_byte_size);
-
-    if ((FR_OK != fat_fs_status) || (file_size != writed_byte_size)) {
-      f_close(&s_i2c_data_file);
-      return USB_FatFS_ERROR;
-    }
-
-    fat_fs_status = f_close(&s_i2c_data_file);
-
-    if (FR_OK != fat_fs_status) {
-      return USB_FatFS_ERROR;
-    }
-
+    file = s_i2c_data_file;
+    path = (TCHAR *)"I2C_DATA.txt ";
     break;
-
   case COMM_PROTOCOL_TYPE_SPI:
-
-    fat_fs_status =
-        f_open(&s_spi_data_file, "SPI_DATA.txt", FA_CREATE_ALWAYS | FA_WRITE);
-
-    if (FR_OK != fat_fs_status) {
-      f_close(&s_spi_data_file);
-      return USB_FatFS_ERROR;
-    }
-
-    fat_fs_status = f_write(&s_spi_data_file, &s_u8_logger_fs_rx_data_buff[0U],
-                            file_size, &writed_byte_size);
-
-    if ((FR_OK != fat_fs_status) || (file_size != writed_byte_size)) {
-      f_close(&s_spi_data_file);
-      return USB_FatFS_ERROR;
-    }
-
-    fat_fs_status = f_close(&s_spi_data_file);
-
-    if (FR_OK != fat_fs_status) {
-      return USB_FatFS_ERROR;
-    }
-
+    file = s_spi_data_file;
+    path = (TCHAR *)"SPI_DATA.txt ";
     break;
-
   case COMM_PROTOCOL_TYPE_CAN:
-
-    fat_fs_status =
-        f_open(&s_can_data_file, "CAN_DATA.txt", FA_CREATE_ALWAYS | FA_WRITE);
-
-    if (FR_OK != fat_fs_status) {
-      f_close(&s_can_data_file);
-      return USB_FatFS_ERROR;
-    }
-
-    fat_fs_status = f_write(&s_can_data_file, &s_u8_logger_fs_rx_data_buff[0U],
-                            file_size, &writed_byte_size);
-
-    if ((FR_OK != fat_fs_status) || (file_size != writed_byte_size)) {
-      f_close(&s_can_data_file);
-      return USB_FatFS_ERROR;
-    }
-
-    fat_fs_status = f_close(&s_can_data_file);
-
-    if (FR_OK != fat_fs_status) {
-      return USB_FatFS_ERROR;
-    }
-
+    file = s_can_data_file;
+    path = (TCHAR *)"CAN_DATA.txt ";
     break;
+  case COMM_PROTOCOL_TYPE_RS232:
+    file = s_rs232_data_file;
+    path = (TCHAR *)"RS232_DATA.txt";
+    break;
+  case COMM_PROTOCOL_TYPE_RS485:
+    file = s_rs485_data_file;
+    path = (TCHAR *)"RS485_DATA.txt";
   default:
     /*TODO Add error state*/
     break;
+  }
+
+  fat_fs_status = f_open(&file, path, FA_CREATE_ALWAYS | FA_WRITE);
+
+  if (FR_OK != fat_fs_status) {
+    f_close(&s_can_data_file);
+    return USB_FatFS_ERROR;
+  }
+
+  fat_fs_status = f_write(&file, &s_u8_logger_fs_rx_data_buff[0U], file_size,
+                          &writed_byte_size);
+
+  if ((FR_OK != fat_fs_status) || (file_size != writed_byte_size)) {
+    f_close(&file);
+    return USB_FatFS_ERROR;
+  }
+
+  fat_fs_status = f_close(&file);
+
+  if (FR_OK != fat_fs_status) {
+    return USB_FatFS_ERROR;
   }
 
   return USB_FatFS_OK;

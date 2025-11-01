@@ -31,16 +31,22 @@ static const char *s_uart_data_dir = "UART_DATA_DIR";
 static const char *s_spi_data_dir = "SPI_DATA_DIR";
 static const char *s_i2c_data_dir = "I2C_DATA_DIR";
 static const char *s_can_data_dir = "CAN_DATA_DIR";
+static const char *s_rs232_data_dir = "RS232_DATA_DIR";
+static const char *s_rs485_data_dir = "RS485_DATA_DIR";
 
 static const char *s_uart_data_file = "UART_DATA_FILE";
 static const char *s_spi_data_file = "SPI_DATA_FILE";
 static const char *s_i2c_data_file = "I2C_DATA_FILE";
 static const char *s_can_data_file = "CAN_DATA_FILE";
+static const char *s_rs232_data_file = "RS232_DATA_FILE";
+static const char *s_rs485_data_file = "RS485_DATA_FILE";
 
 static lfs_dir_t s_lfs_uart_dir;
 static lfs_dir_t s_lfs_spi_dir;
 static lfs_dir_t s_lfs_i2c_dir;
 static lfs_dir_t s_lfs_can_dir;
+static lfs_dir_t s_lfs_rs232_dir;
+static lfs_dir_t s_lfs_rs485_dir;
 
 static struct lfs_info s_file_info;
 
@@ -239,6 +245,14 @@ logger_fs_get_file_size(const CommProtocol_t *p_comm_protocol,
     status = lfs_stat(&s_logger_file_system, (const char *)s_can_data_file,
                       &s_file_info);
     break;
+  case COMM_PROTOCOL_TYPE_RS232:
+    status = lfs_stat(&s_logger_file_system, (const char *)s_rs232_data_file,
+                      &s_file_info);
+    break;
+  case COMM_PROTOCOL_TYPE_RS485:
+    status = lfs_stat(&s_logger_file_system, (const char *)s_rs485_data_file,
+                      &s_file_info);
+    break;
   default:
     break;
   }
@@ -290,7 +304,7 @@ LFS_Logger_Status_e logger_fs_read_file(const CommProtocol_t *p_comm_protocol,
   int status = LFS_ERR_OK;
   int readed_byte = 0;
 
-  lfs_dir_t *p_dir = NULL;
+  lfs_dir_t *p_lfs_dir = NULL;
   uint8_t *p_dir_name = NULL;
   uint8_t *p_file_name = NULL;
 
@@ -299,31 +313,42 @@ LFS_Logger_Status_e logger_fs_read_file(const CommProtocol_t *p_comm_protocol,
     return LFS_LOGGER_ERROR; /*TODO: Add error state*/
     break;
   case COMM_PROTOCOL_TYPE_UART:
-    p_dir = &s_lfs_uart_dir;
+    p_lfs_dir = &s_lfs_uart_dir;
     p_dir_name = (uint8_t *)s_uart_data_dir;
     p_file_name = (uint8_t *)s_uart_data_file;
     break;
   case COMM_PROTOCOL_TYPE_I2C:
-    p_dir = &s_lfs_i2c_dir;
+    p_lfs_dir = &s_lfs_i2c_dir;
     p_dir_name = (uint8_t *)s_i2c_data_dir;
     p_file_name = (uint8_t *)s_i2c_data_file;
     break;
   case COMM_PROTOCOL_TYPE_SPI:
-    p_dir = &s_lfs_spi_dir;
+    p_lfs_dir = &s_lfs_spi_dir;
     p_dir_name = (uint8_t *)s_spi_data_dir;
     p_file_name = (uint8_t *)s_spi_data_file;
     break;
   case COMM_PROTOCOL_TYPE_CAN:
-    p_dir = &s_lfs_can_dir;
+    p_lfs_dir = &s_lfs_can_dir;
     p_dir_name = (uint8_t *)s_can_data_dir;
     p_file_name = (uint8_t *)s_can_data_file;
+    break;
+  case COMM_PROTOCOL_TYPE_RS232:
+    p_lfs_dir = &s_lfs_rs232_dir;
+    p_dir_name = (uint8_t *)s_rs232_data_dir;
+    p_file_name = (uint8_t *)s_rs232_data_file;
+    break;
+  case COMM_PROTOCOL_TYPE_RS485:
+    p_lfs_dir = &s_lfs_rs485_dir;
+    p_dir_name = (uint8_t *)s_rs485_data_dir;
+    p_file_name = (uint8_t *)s_rs485_data_dir;
     break;
   default:
     return LFS_LOGGER_ERROR; /*TODO: Add error state*/
     break;
   }
 
-  status = lfs_dir_open(&s_logger_file_system, p_dir, (const char *)p_dir_name);
+  status =
+      lfs_dir_open(&s_logger_file_system, p_lfs_dir, (const char *)p_dir_name);
 
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;
@@ -401,6 +426,18 @@ logger_fs_write_received_data(const CommProtocol_t *p_comm_protocol) {
         (const uint8_t *)s_can_data_file, &p_comm_protocol->p_tx_buff[0U],
         MAX_USB_PROTOCOL_SIZE);
     break;
+  case COMM_PROTOCOL_TYPE_RS232:
+    status = s_logger_fs_write_file(
+        &s_lfs_rs232_dir, (const uint8_t *)s_rs232_data_dir,
+        (const uint8_t *)s_rs232_data_file, &p_comm_protocol->p_tx_buff[0U],
+        MAX_USB_PROTOCOL_SIZE);
+    break;
+  case COMM_PROTOCOL_TYPE_RS485:
+    status = s_logger_fs_write_file(
+        &s_lfs_rs485_dir, (const uint8_t *)s_rs485_data_dir,
+        (const uint8_t *)s_rs485_data_file, &p_comm_protocol->p_tx_buff[0U],
+        MAX_USB_PROTOCOL_SIZE);
+    break;
   default:
     return LFS_LOGGER_ERROR;
     break;
@@ -462,6 +499,18 @@ LFS_Logger_Status_e logger_fs_init(void) {
   }
 
   status = lfs_mkdir(&s_logger_file_system, (const char *)s_can_data_dir);
+
+  if (LFS_ERR_OK != status) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  status = lfs_mkdir(&s_logger_file_system, (const char *)s_rs232_data_dir);
+
+  if (LFS_ERR_OK != status) {
+    return LFS_LOGGER_ERROR;
+  }
+
+  status = lfs_mkdir(&s_logger_file_system, (const char *)s_rs485_data_dir);
 
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;

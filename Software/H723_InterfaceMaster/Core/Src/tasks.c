@@ -214,7 +214,7 @@ void IM_system_init(void) {
   s_gSystem.p_comm_protocol->p_tx_buff = (uint8_t *)&s_u8_comm_tx_data_buff[0U];
 
   s_gSystem.p_comm_protocol->active_buff = COMM_ACTIVE_BUFF_0;
-  /*TODO: Type will selected by user from gui.*/
+
   s_gSystem.p_comm_protocol->type = COMM_PROTOCOL_TYPE_NONE;
 
   s_gSystem.p_comm_protocol->rx_status = COMM_STATUS_IDLE;

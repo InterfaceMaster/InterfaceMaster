@@ -90,6 +90,13 @@ static void s_set_comm_protocol_type(CommProtocolType_e comm_protocol_type) {
     break;
   case COMM_PROTOCOL_TYPE_CAN:
     s_comm_protocol_handler.type = COMM_PROTOCOL_TYPE_CAN;
+    break;
+  case COMM_PROTOCOL_TYPE_RS232:
+    s_comm_protocol_handler.type = COMM_PROTOCOL_TYPE_RS232;
+    break;
+  case COMM_PROTOCOL_TYPE_RS485:
+    s_comm_protocol_handler.type = COMM_PROTOCOL_TYPE_RS485;
+    break;
   default:
     s_comm_protocol_handler.type = COMM_PROTOCOL_TYPE_NONE;
     break;
