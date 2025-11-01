@@ -34,12 +34,15 @@
 
 #include "board_options.h"
 #include "communication.h"
+#include "defines.h"
+#include "external_storage_fs.h"
 #include "ft5426_touch_ic.h"
 #include "lm75b_temp_ic.h"
 #include "logger_fs.h"
 #include "lvgl.h"
 #include "tasks.h"
 #include "tft.h"
+
 /*
   ==============================================================================
                       ##### STATIC FUNCTION PROTOTYPE #####
@@ -132,12 +135,19 @@ static void USB_init(void) {
  */
 static void s_controller_task_CB(void) {
 
-  if (WORK_MODE_USB_BRIDGE == s_gSystem.device_work_mode) {
+  if ((WORK_MODE_USB_BRIDGE == s_gSystem.device_work_mode) &&
+      (1U == s_gSystem.start_usb_bridge)) {
     USB_send_data();
     logger_fs_write_received_data(s_gSystem.p_comm_protocol);
-  } else if (WORK_MODE_EXPORT_DATA == s_gSystem.device_work_mode) {
+  } else if ((WORK_MODE_EXPORT_DATA == s_gSystem.device_work_mode) &&
+             (1U == s_gSystem.start_export_data)) {
+
     IM_USB_FatFS_fill_instance(s_gSystem.p_comm_protocol);
-    MX_USB_HOST_Process();
+
+    if (1U == s_gSystem.start_export_data) {
+      MX_USB_HOST_Process();
+    }
+
   } else if (WORK_MODE_IDLE == s_gSystem.device_work_mode) {
     /*TODO: give gui error*/
   } else {

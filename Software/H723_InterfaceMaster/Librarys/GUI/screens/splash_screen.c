@@ -5,6 +5,8 @@
  *      Author: MTA
  */
 
+#include "defines.h"
+#include "gui.h"
 #include "gui_helper.h"
 #include "image_declarations.h"
 #include "lvgl.h"

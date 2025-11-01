@@ -25,8 +25,8 @@
 #include "usbh_msc.h"
 
 /* USER CODE BEGIN Includes */
-#include "tasks.h"
-
+#include "defines.h"
+#include "external_storage_fs.h"
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN PV */

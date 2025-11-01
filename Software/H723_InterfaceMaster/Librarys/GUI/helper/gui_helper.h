@@ -8,8 +8,7 @@
 #ifndef GUI_HELPER_GUI_HELPER_H_
 #define GUI_HELPER_GUI_HELPER_H_
 
-#include "gui.h"
-#include "tasks.h"
+#include "defines.h"
 
 void IM_gui_create_screen(SystemInstance_t *p_sub_system);
 void IM_gui_change_screen(SystemInstance_t *p_sub_system);

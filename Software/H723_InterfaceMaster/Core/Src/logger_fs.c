@@ -375,7 +375,7 @@ LFS_Logger_Status_e logger_fs_read_file(const CommProtocol_t *p_comm_protocol,
     return LFS_LOGGER_ERROR;
   }
 
-  status = lfs_dir_close(&s_logger_file_system, p_dir);
+  status = lfs_dir_close(&s_logger_file_system, &p_lfs_dir);
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;
   }

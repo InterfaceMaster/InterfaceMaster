@@ -137,7 +137,7 @@ void set_comm_protocol_tx_size(uint8_t size) {
  * @retVal Address of Tx buff.
  */
 uint8_t *get_comm_protocol_tx_buff(void) {
-  return s_comm_protocol_handler.p_tx_buff;
+  return &s_comm_protocol_handler.p_tx_buff[0U];
 }
 
 /**
