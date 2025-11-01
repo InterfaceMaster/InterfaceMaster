@@ -1279,7 +1279,7 @@ PartTypes=0
 Net1=NetName=+12VDC|NetColor=clRed
 Net2=NetName=+12VIN|NetColor=clRed
 Net3=NetName=+3.3VDC|NetColor=clRed
-Net4=NetName=+5VDC|NetColor=clBlack
+Net4=NetName=+5VDC|NetColor=clRed
 Net5=NetName=+5VISO|NetColor=clRed
 Net6=NetName=FMC_A0|NetColor=$000099FF
 Net7=NetName=FMC_A1|NetColor=$000099FF
@@ -1339,7 +1339,9 @@ Net60=NetName=LTDC_R7|NetColor=clRed
 Net61=NetName=Net*_2|NetColor=clRed
 Net62=NetName=NetC?_1|NetColor=clRed
 Net63=NetName=NetC?_2|NetColor=clRed
-Net64=NetName=NetC4_2|NetColor=clRed
+Net64=NetName=NetC1_1|NetColor=clRed
+Net65=NetName=NetC4_2|NetColor=clRed
+Net66=NetName=NetC6_1|NetColor=clRed
 
 [Comparison Options]
 ComparisonOptions0=Kind=Net|MinPercent=75|MinMatch=3|ShowMatch=0|UseName=-1|InclAllRules=0
