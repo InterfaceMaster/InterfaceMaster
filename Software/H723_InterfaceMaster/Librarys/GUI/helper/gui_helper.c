@@ -76,16 +76,16 @@ void IM_gui_change_screen(SystemInstance_t *p_sub_system) {
 
   switch (p_sub_system->p_GUI->active_screen) {
   case SPLASH_SCREEN:
-
+    splash_screen_init(p_sub_system);
     break;
   case WORK_MODE_SELECT_SCREEN:
     work_mode_screen_init(p_sub_system);
     break;
   case COMM_PROTOCOL_SELECT_SCREEN:
-
+    input_protocol_select_screen(p_sub_system);
     break;
   case DATA_WATCH_SCREEN:
-
+    data_watch_screen(p_sub_system);
     break;
   default:
 

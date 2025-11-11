@@ -81,7 +81,8 @@ typedef enum {
 typedef struct CommProtocol_t {
   CommProtocolType_e type;
   CommProtocolActiveBuff_e active_buff;
-  uint8_t *p_tx_buff;
+  uint8_t *p_tx_buff_0;
+  uint8_t *p_tx_buff_1;
   uint8_t *p_rx_buff_0;
   uint8_t *p_rx_buff_1;
   uint8_t u8_tx_size;

@@ -137,7 +137,12 @@ void set_comm_protocol_tx_size(uint8_t size) {
  * @retVal Address of Tx buff.
  */
 uint8_t *get_comm_protocol_tx_buff(void) {
-  return &s_comm_protocol_handler.p_tx_buff[0U];
+  if (COMM_ACTIVE_BUFF_0 == s_comm_protocol_handler.active_buff) {
+    return &s_comm_protocol_handler.p_tx_buff_0[0U];
+  } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
+    return &s_comm_protocol_handler.p_tx_buff_1[0U];
+  }
+  return NULL; /*TODO: add logs for hardfault*/
 }
 
 /**
@@ -204,6 +209,7 @@ CommProtocolType_e get_comm_protocol_type(void) {
 
 void flush_comm_prtocol_tx_buff(void) {
   uint8_t *p_active_buff = get_comm_protocol_rx_buff();
+
   memcpy(&s_comm_protocol_handler.p_tx_buff[0U], p_active_buff,
          MAX_USB_PROTOCOL_SIZE);
 }

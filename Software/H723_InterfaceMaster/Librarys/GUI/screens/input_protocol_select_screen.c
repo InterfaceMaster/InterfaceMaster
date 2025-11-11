@@ -86,7 +86,7 @@ static void button_event_CB(lv_event_t *e) {
     s_sub_system->p_GUI->active_screen = DATA_WATCH_SCREEN;
     s_sub_system->start_usb_bridge = 1U;
   } else if (WORK_MODE_EXPORT_DATA == s_sub_system->device_work_mode) {
-    //	  s_sub_system->p_GUI->active_screen = DATA_INFO
+    s_sub_system->p_GUI->active_screen = DATA_WATCH_SCREEN;
     s_sub_system->start_export_data = 1U;
   }
 

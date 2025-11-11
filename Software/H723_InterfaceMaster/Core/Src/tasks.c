@@ -82,7 +82,8 @@ static SystemInstance_t s_gSystem = {0U};
 static volatile uint8_t s_u8_comm_rx_data_buff_0[MAX_USB_PROTOCOL_SIZE] = {0U};
 static volatile uint8_t s_u8_comm_rx_data_buff_1[MAX_USB_PROTOCOL_SIZE] = {0U};
 
-static volatile uint8_t s_u8_comm_tx_data_buff[MAX_USB_PROTOCOL_SIZE] = {0U};
+static volatile uint8_t s_u8_comm_tx_data_buff_0[MAX_USB_PROTOCOL_SIZE] = {0U};
+static volatile uint8_t s_u8_comm_tx_data_buff_1[MAX_USB_PROTOCOL_SIZE] = {0U};
 
 static TaskConfig_t s_tasks_config[4U] = {0U};
 
@@ -221,7 +222,11 @@ void IM_system_init(void) {
   s_gSystem.p_comm_protocol->p_rx_buff_1 =
       (uint8_t *)&s_u8_comm_rx_data_buff_1[0U];
 
-  s_gSystem.p_comm_protocol->p_tx_buff = (uint8_t *)&s_u8_comm_tx_data_buff[0U];
+  s_gSystem.p_comm_protocol->p_tx_buff_0 =
+      (uint8_t *)&s_u8_comm_tx_data_buff_0[0U];
+
+  s_gSystem.p_comm_protocol->p_tx_buff_1 =
+      (uint8_t *)&s_u8_comm_tx_data_buff_1[0U];
 
   s_gSystem.p_comm_protocol->active_buff = COMM_ACTIVE_BUFF_0;
 

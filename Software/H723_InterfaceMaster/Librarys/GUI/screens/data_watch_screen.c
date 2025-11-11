@@ -6,10 +6,8 @@
  */
 
 #include "communication.h"
-#include "defines.h"
 #include "gui.h"
 #include "gui_helper.h"
-#include "image_declarations.h"
 #include "lvgl.h"
 
 static SystemInstance_t *s_sub_system;
