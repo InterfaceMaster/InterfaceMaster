@@ -47,11 +47,13 @@ static CommProtocol_t s_comm_protocol_handler = {0U};
  * @param Address of Tx buffer.
  * @retVal None.
  */
-static void s_set_comm_protocol_tx_buff_addrs(uint8_t *p_buff) {
-  if (NULL == p_buff) {
+static void s_set_comm_protocol_tx_buff_addrs(uint8_t *p_rx_buff_0,
+                                              uint8_t *p_rx_buff_1) {
+  if ((NULL == p_rx_buff_0) || (NULL == p_rx_buff_1)) {
     return;
   }
-  s_comm_protocol_handler.p_tx_buff = p_buff;
+  s_comm_protocol_handler.p_tx_buff_0 = p_rx_buff_0;
+  s_comm_protocol_handler.p_tx_buff_1 = p_rx_buff_1;
 }
 
 /**
@@ -208,10 +210,10 @@ CommProtocolType_e get_comm_protocol_type(void) {
  */
 
 void flush_comm_prtocol_tx_buff(void) {
-  uint8_t *p_active_buff = get_comm_protocol_rx_buff();
+  uint8_t *p_rx_active_buff = get_comm_protocol_rx_buff();
+  uint8_t *p_tx_active_buff = get_comm_protocol_tx_buff();
 
-  memcpy(&s_comm_protocol_handler.p_tx_buff[0U], p_active_buff,
-         MAX_USB_PROTOCOL_SIZE);
+  memcpy(p_tx_active_buff, p_rx_active_buff, MAX_USB_PROTOCOL_SIZE);
 }
 
 /**
@@ -229,7 +231,9 @@ void init_comm_protocol_handler(CommProtocol_t *comm_protocol) {
   s_set_comm_protocol_type(comm_protocol->type);
   s_set_comm_protocol_rx_buff_addrs(&comm_protocol->p_rx_buff_0[0U],
                                     &comm_protocol->p_rx_buff_1[0U]);
-  s_set_comm_protocol_tx_buff_addrs(&comm_protocol->p_tx_buff[0U]);
+
+  s_set_comm_protocol_tx_buff_addrs(&comm_protocol->p_tx_buff_0[0U],
+                                    &comm_protocol->p_tx_buff_1[0U]);
 }
 
 /**
@@ -263,8 +267,10 @@ void USB_send_data(void) {
 
     flush_comm_prtocol_tx_buff();
 
-    status = CDC_Transmit_HS(&s_comm_protocol_handler.p_tx_buff[0U],
-                             MAX_USB_PROTOCOL_SIZE);
+    uint8_t *p_tx_active_buff = get_comm_protocol_tx_buff();
+
+    status =
+        CDC_Transmit_HS((uint8_t *)p_tx_active_buff, MAX_USB_PROTOCOL_SIZE);
 
     if ((uint8_t)USBD_OK != status) {
       s_comm_protocol_handler.tx_status = COMM_STATUS_FAIL;

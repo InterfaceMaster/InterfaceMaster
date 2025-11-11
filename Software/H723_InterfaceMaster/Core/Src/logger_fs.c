@@ -375,7 +375,7 @@ LFS_Logger_Status_e logger_fs_read_file(const CommProtocol_t *p_comm_protocol,
     return LFS_LOGGER_ERROR;
   }
 
-  status = lfs_dir_close(&s_logger_file_system, &p_lfs_dir);
+  status = lfs_dir_close(&s_logger_file_system, p_lfs_dir);
   if (LFS_ERR_OK != status) {
     return LFS_LOGGER_ERROR;
   }
@@ -401,42 +401,44 @@ logger_fs_write_received_data(const CommProtocol_t *p_comm_protocol) {
 
   flush_comm_prtocol_tx_buff();
 
+  uint8_t *p_tx_active_buff = get_comm_protocol_tx_buff();
+
   switch (p_comm_protocol->type) {
   case COMM_PROTOCOL_TYPE_UART:
-    status = s_logger_fs_write_file(
-        &s_lfs_uart_dir, (const uint8_t *)s_uart_data_dir,
-        (const uint8_t *)s_uart_data_file, &p_comm_protocol->p_tx_buff[0U],
-        MAX_USB_PROTOCOL_SIZE);
+    status = s_logger_fs_write_file(&s_lfs_uart_dir,
+                                    (const uint8_t *)s_uart_data_dir,
+                                    (const uint8_t *)s_uart_data_file,
+                                    p_tx_active_buff, MAX_USB_PROTOCOL_SIZE);
     break;
   case COMM_PROTOCOL_TYPE_I2C:
-    status = s_logger_fs_write_file(
-        &s_lfs_i2c_dir, (const uint8_t *)s_i2c_data_dir,
-        (const uint8_t *)s_i2c_data_file, &p_comm_protocol->p_tx_buff[0U],
-        MAX_USB_PROTOCOL_SIZE);
+    status =
+        s_logger_fs_write_file(&s_lfs_i2c_dir, (const uint8_t *)s_i2c_data_dir,
+                               (const uint8_t *)s_i2c_data_file,
+                               p_tx_active_buff, MAX_USB_PROTOCOL_SIZE);
     break;
   case COMM_PROTOCOL_TYPE_SPI:
-    status = s_logger_fs_write_file(
-        &s_lfs_spi_dir, (const uint8_t *)s_spi_data_dir,
-        (const uint8_t *)s_spi_data_file, &p_comm_protocol->p_tx_buff[0U],
-        MAX_USB_PROTOCOL_SIZE);
+    status =
+        s_logger_fs_write_file(&s_lfs_spi_dir, (const uint8_t *)s_spi_data_dir,
+                               (const uint8_t *)s_spi_data_file,
+                               p_tx_active_buff, MAX_USB_PROTOCOL_SIZE);
     break;
   case COMM_PROTOCOL_TYPE_CAN:
-    status = s_logger_fs_write_file(
-        &s_lfs_can_dir, (const uint8_t *)s_can_data_dir,
-        (const uint8_t *)s_can_data_file, &p_comm_protocol->p_tx_buff[0U],
-        MAX_USB_PROTOCOL_SIZE);
+    status =
+        s_logger_fs_write_file(&s_lfs_can_dir, (const uint8_t *)s_can_data_dir,
+                               (const uint8_t *)s_can_data_file,
+                               p_tx_active_buff, MAX_USB_PROTOCOL_SIZE);
     break;
   case COMM_PROTOCOL_TYPE_RS232:
-    status = s_logger_fs_write_file(
-        &s_lfs_rs232_dir, (const uint8_t *)s_rs232_data_dir,
-        (const uint8_t *)s_rs232_data_file, &p_comm_protocol->p_tx_buff[0U],
-        MAX_USB_PROTOCOL_SIZE);
+    status = s_logger_fs_write_file(&s_lfs_rs232_dir,
+                                    (const uint8_t *)s_rs232_data_dir,
+                                    (const uint8_t *)s_rs232_data_file,
+                                    p_tx_active_buff, MAX_USB_PROTOCOL_SIZE);
     break;
   case COMM_PROTOCOL_TYPE_RS485:
-    status = s_logger_fs_write_file(
-        &s_lfs_rs485_dir, (const uint8_t *)s_rs485_data_dir,
-        (const uint8_t *)s_rs485_data_file, &p_comm_protocol->p_tx_buff[0U],
-        MAX_USB_PROTOCOL_SIZE);
+    status = s_logger_fs_write_file(&s_lfs_rs485_dir,
+                                    (const uint8_t *)s_rs485_data_dir,
+                                    (const uint8_t *)s_rs485_data_file,
+                                    p_tx_active_buff, MAX_USB_PROTOCOL_SIZE);
     break;
   default:
     return LFS_LOGGER_ERROR;
