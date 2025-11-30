@@ -27,6 +27,9 @@
 
   */
 
+static FDCAN_RxHeaderTypeDef s_fdcan_header;
+static uint8_t s_fdcan_rx_data[12U];
+
 /**
  * @brief This structure defines communication protocol.
  * @attention Any modification to this structure requires analysis the entire
@@ -493,6 +496,64 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 
     } else {
       s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+    }
+  }
+}
+
+/**
+ * @brief  FDCAN callback.
+ * @param  hfdcan Pointer to a FDCAN_HandleTypeDef structure that contains
+ *                the configuration information for the specified FDCAN.
+ * @retval None
+ */
+
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan,
+                               uint32_t RxFifo0ITs) {
+
+  if (hfdcan->Instance == FDCAN1) {
+
+    if ((NULL == s_comm_protocol_handler.p_rx_buff_0) ||
+        (NULL == s_comm_protocol_handler.p_rx_buff_1)) {
+      return;
+    }
+
+    if (COMM_ACTIVE_BUFF_0 == s_comm_protocol_handler.active_buff) {
+
+      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
+
+      *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
+
+      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+      memset(&s_comm_protocol_handler.p_rx_buff_1[0U], '\0',
+             MAX_USB_PROTOCOL_SIZE);
+
+      HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &s_fdcan_header,
+                             &s_comm_protocol_handler.p_rx_buff_1[0U]);
+
+    } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
+
+      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
+
+      *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
+
+      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+      memset(&s_comm_protocol_handler.p_rx_buff_0[0U], '\0',
+             MAX_USB_PROTOCOL_SIZE);
+
+      HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &s_fdcan_header,
+                             &s_comm_protocol_handler.p_rx_buff_0[0U]);
+
+    } else {
+      s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+    }
+
+    if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO1_NEW_MESSAGE,
+                                       0) != HAL_OK) {
+      Error_Handler();
     }
   }
 }
