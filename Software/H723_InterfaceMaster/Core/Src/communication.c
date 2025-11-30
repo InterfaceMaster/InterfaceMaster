@@ -28,7 +28,6 @@
   */
 
 static FDCAN_RxHeaderTypeDef s_fdcan_header;
-static uint8_t s_fdcan_rx_data[12U];
 
 /**
  * @brief This structure defines communication protocol.
@@ -297,6 +296,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
   /* Prevent unused argument(s) compilation warning */
   if (UART7 == huart->Instance) {
 
+    HAL_StatusTypeDef UART7_HAL_status = HAL_OK;
+
     if (62U < Size) {
       s_comm_protocol_handler.u8_rx_size = (uint8_t)Size;
 
@@ -308,34 +309,41 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
       if (COMM_ACTIVE_BUFF_0 == s_comm_protocol_handler.active_buff) {
 
         s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
-
-        *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
-        *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
-
-        s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
-
-        memset(s_comm_protocol_handler.p_rx_buff_1, '\0',
-               MAX_USB_PROTOCOL_SIZE);
-
-        HAL_UARTEx_ReceiveToIdle_DMA(&huart7,
-                                     &s_comm_protocol_handler.p_rx_buff_1[0U],
-                                     MAX_USB_PROTOCOL_SIZE);
-
-      } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
-
-        s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
-
-        *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
-        *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
-
         s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 
         memset(s_comm_protocol_handler.p_rx_buff_0, '\0',
                MAX_USB_PROTOCOL_SIZE);
 
-        HAL_UARTEx_ReceiveToIdle_DMA(&huart7,
-                                     &s_comm_protocol_handler.p_rx_buff_0[0U],
-                                     MAX_USB_PROTOCOL_SIZE);
+        *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
+        *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
+
+        UART7_HAL_status = HAL_UARTEx_ReceiveToIdle_DMA(
+            &huart7, &s_comm_protocol_handler.p_rx_buff_0[0U],
+            MAX_USB_PROTOCOL_SIZE);
+
+        if (HAL_OK != UART7_HAL_status) {
+          s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+        }
+
+      } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
+
+        s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
+        s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+        memset(s_comm_protocol_handler.p_rx_buff_1, '\0',
+               MAX_USB_PROTOCOL_SIZE);
+
+        *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
+        *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
+
+        UART7_HAL_status = HAL_UARTEx_ReceiveToIdle_DMA(
+            &huart7, &s_comm_protocol_handler.p_rx_buff_1[0U],
+            MAX_USB_PROTOCOL_SIZE);
+
+        if (HAL_OK != UART7_HAL_status) {
+          s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+        }
+
       } else {
         s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
       }
@@ -344,6 +352,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
     }
 
   } else if (USART2 == huart->Instance) {
+
+    HAL_StatusTypeDef USART2_HAL_status = HAL_OK;
 
     if (62U < Size) {
 
@@ -355,34 +365,40 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
       if (COMM_ACTIVE_BUFF_0 == s_comm_protocol_handler.active_buff) {
 
         s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
+        s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+        memset(&s_comm_protocol_handler.p_rx_buff_0[0U], '\0',
+               MAX_USB_PROTOCOL_SIZE);
 
         *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
         *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
 
-        s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+        USART2_HAL_status = HAL_UARTEx_ReceiveToIdle_DMA(
+            &huart2, &s_comm_protocol_handler.p_rx_buff_0[0U],
+            MAX_USB_PROTOCOL_SIZE);
 
-        memset(&s_comm_protocol_handler.p_rx_buff_1[0U], '\0',
-               MAX_USB_PROTOCOL_SIZE);
-
-        HAL_UARTEx_ReceiveToIdle_DMA(&huart2,
-                                     &s_comm_protocol_handler.p_rx_buff_1[0U],
-                                     MAX_USB_PROTOCOL_SIZE);
+        if (HAL_OK != USART2_HAL_status) {
+          s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+        }
 
       } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
 
         s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
+        s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+        memset(s_comm_protocol_handler.p_rx_buff_1, '\0',
+               MAX_USB_PROTOCOL_SIZE);
 
         *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
         *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
 
-        s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+        USART2_HAL_status = HAL_UARTEx_ReceiveToIdle_DMA(
+            &huart2, &s_comm_protocol_handler.p_rx_buff_1[0U],
+            MAX_USB_PROTOCOL_SIZE);
 
-        memset(s_comm_protocol_handler.p_rx_buff_0, '\0',
-               MAX_USB_PROTOCOL_SIZE);
-
-        HAL_UARTEx_ReceiveToIdle_DMA(&huart2,
-                                     &s_comm_protocol_handler.p_rx_buff_0[0U],
-                                     MAX_USB_PROTOCOL_SIZE);
+        if (HAL_OK != USART2_HAL_status) {
+          s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+        }
 
       } else {
         s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
@@ -404,6 +420,8 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c) {
 
   if (I2C4 == hi2c->Instance) {
 
+    HAL_StatusTypeDef I2C4_HAL_status = HAL_OK;
+
     if ((NULL == s_comm_protocol_handler.p_rx_buff_0) ||
         (NULL == s_comm_protocol_handler.p_rx_buff_1)) {
       return;
@@ -412,34 +430,41 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c) {
     if (COMM_ACTIVE_BUFF_0 == s_comm_protocol_handler.active_buff) {
 
       s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
-
-      *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
-      *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
-
-      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
-
-      memset(&s_comm_protocol_handler.p_rx_buff_1[0U], '\0',
-             MAX_USB_PROTOCOL_SIZE);
-
-      HAL_I2C_Slave_Receive_DMA(&hi2c4,
-                                &s_comm_protocol_handler.p_rx_buff_1[0U],
-                                (uint16_t)MAX_USB_PROTOCOL_SIZE);
-
-    } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
-
-      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
-
-      *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
-      *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
-
       s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 
       memset(&s_comm_protocol_handler.p_rx_buff_0[0U], '\0',
              MAX_USB_PROTOCOL_SIZE);
 
-      HAL_I2C_Slave_Receive_DMA(&hi2c4,
-                                &s_comm_protocol_handler.p_rx_buff_0[0U],
-                                (uint16_t)MAX_USB_PROTOCOL_SIZE);
+      *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
+
+      I2C4_HAL_status = HAL_I2C_Slave_Receive_DMA(
+          &hi2c4, &s_comm_protocol_handler.p_rx_buff_0[0U],
+          (uint16_t)MAX_USB_PROTOCOL_SIZE);
+
+      if (HAL_OK != I2C4_HAL_status) {
+        s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+      }
+
+    } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
+
+      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
+      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+      memset(&s_comm_protocol_handler.p_rx_buff_1[0U], '\0',
+             MAX_USB_PROTOCOL_SIZE);
+
+      *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
+
+      I2C4_HAL_status = HAL_I2C_Slave_Receive_DMA(
+          &hi2c4, &s_comm_protocol_handler.p_rx_buff_1[0U],
+          (uint16_t)MAX_USB_PROTOCOL_SIZE);
+
+      if (HAL_OK != I2C4_HAL_status) {
+        s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+      }
+
     } else {
       s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
     }
@@ -458,6 +483,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
   if (GPIO_Pin == GPIO_PIN_3) {
 
     HAL_SPI_DMAStop(&hspi2);
+    HAL_StatusTypeDef SPI_HAL_status = HAL_OK;
 
     if ((NULL == s_comm_protocol_handler.p_rx_buff_0) ||
         (NULL == s_comm_protocol_handler.p_rx_buff_1)) {
@@ -467,32 +493,40 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
     if (COMM_ACTIVE_BUFF_0 == s_comm_protocol_handler.active_buff) {
 
       s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
-
-      *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
-      *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
-
-      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
-
-      memset(&s_comm_protocol_handler.p_rx_buff_1[0U], '\0',
-             MAX_USB_PROTOCOL_SIZE);
-
-      HAL_SPI_Receive_DMA(&hspi2, &s_comm_protocol_handler.p_rx_buff_1[0U],
-                          (uint16_t)MAX_USB_PROTOCOL_SIZE);
-
-    } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
-
-      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
-
-      *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
-      *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
-
       s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 
       memset(&s_comm_protocol_handler.p_rx_buff_0[0U], '\0',
              MAX_USB_PROTOCOL_SIZE);
 
-      HAL_SPI_Receive_DMA(&hspi2, &s_comm_protocol_handler.p_rx_buff_0[0U],
-                          (uint16_t)MAX_USB_PROTOCOL_SIZE);
+      *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
+
+      SPI_HAL_status =
+          HAL_SPI_Receive_DMA(&hspi2, &s_comm_protocol_handler.p_rx_buff_0[0U],
+                              (uint16_t)MAX_USB_PROTOCOL_SIZE);
+
+      if (HAL_OK != SPI_HAL_status) {
+        s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+      }
+
+    } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
+
+      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
+      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+      memset(&s_comm_protocol_handler.p_rx_buff_1[0U], '\0',
+             MAX_USB_PROTOCOL_SIZE);
+
+      *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
+
+      SPI_HAL_status =
+          HAL_SPI_Receive_DMA(&hspi2, &s_comm_protocol_handler.p_rx_buff_0[0U],
+                              (uint16_t)MAX_USB_PROTOCOL_SIZE);
+
+      if (HAL_OK != SPI_HAL_status) {
+        s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+      }
 
     } else {
       s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
@@ -511,6 +545,7 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan,
                                uint32_t RxFifo0ITs) {
 
   if (hfdcan->Instance == FDCAN1) {
+    HAL_StatusTypeDef FDCAN1_HAL_status = HAL_OK;
 
     if ((NULL == s_comm_protocol_handler.p_rx_buff_0) ||
         (NULL == s_comm_protocol_handler.p_rx_buff_1)) {
@@ -520,32 +555,40 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan,
     if (COMM_ACTIVE_BUFF_0 == s_comm_protocol_handler.active_buff) {
 
       s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_1;
-
-      *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
-      *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
-
-      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
-
-      memset(&s_comm_protocol_handler.p_rx_buff_1[0U], '\0',
-             MAX_USB_PROTOCOL_SIZE);
-
-      HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &s_fdcan_header,
-                             &s_comm_protocol_handler.p_rx_buff_1[0U]);
-
-    } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
-
-      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
-
-      *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
-      *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
-
       s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
 
       memset(&s_comm_protocol_handler.p_rx_buff_0[0U], '\0',
              MAX_USB_PROTOCOL_SIZE);
 
-      HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &s_fdcan_header,
-                             &s_comm_protocol_handler.p_rx_buff_0[0U]);
+      *(s_comm_protocol_handler.p_rx_buff_0 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_0 + 63U) = '\n';
+
+      FDCAN1_HAL_status =
+          HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &s_fdcan_header,
+                                 &s_comm_protocol_handler.p_rx_buff_0[0U]);
+
+      if (HAL_OK != FDCAN1_HAL_status) {
+        s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+      }
+
+    } else if (COMM_ACTIVE_BUFF_1 == s_comm_protocol_handler.active_buff) {
+
+      s_comm_protocol_handler.active_buff = COMM_ACTIVE_BUFF_0;
+      s_comm_protocol_handler.rx_status = COMM_STATUS_OK;
+
+      memset(&s_comm_protocol_handler.p_rx_buff_1[0U], '\0',
+             MAX_USB_PROTOCOL_SIZE);
+
+      *(s_comm_protocol_handler.p_rx_buff_1 + 62U) = '\r';
+      *(s_comm_protocol_handler.p_rx_buff_1 + 63U) = '\n';
+
+      FDCAN1_HAL_status =
+          HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &s_fdcan_header,
+                                 &s_comm_protocol_handler.p_rx_buff_1[0U]);
+
+      if (HAL_OK != FDCAN1_HAL_status) {
+        s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
+      }
 
     } else {
       s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
@@ -553,7 +596,7 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan,
 
     if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO1_NEW_MESSAGE,
                                        0) != HAL_OK) {
-      Error_Handler();
+      s_comm_protocol_handler.rx_status = COMM_STATUS_FAIL;
     }
   }
 }
