@@ -36,19 +36,21 @@ static LM75B_Status_e lm75b_read_register(const uint8_t reg_addr,
                                           uint8_t *data_buff,
                                           uint8_t data_size) {
   HAL_StatusTypeDef status;
+  LM75B_Status_e ret_val = LM75B_OK;
 
-  if (NULL == data_buff) {
-    return LM75B_ERROR;
+  if (NULL != data_buff) {
+    status = HAL_I2C_Mem_Read(&hi2c4, (I2C_ADDRESS << 1U), reg_addr,
+                              I2C_MEMADD_SIZE_8BIT, data_buff, data_size,
+                              I2C_TIMEOUT_100_MS);
+    if (HAL_OK != status) {
+      ret_val = LM75B_ERROR;
+    }
+
+  } else {
+    ret_val = LM75B_ERROR;
   }
 
-  status = HAL_I2C_Mem_Read(&hi2c4, (I2C_ADDRESS << 1U), reg_addr,
-                            I2C_MEMADD_SIZE_8BIT, data_buff, data_size,
-                            I2C_TIMEOUT_100_MS);
-  if (HAL_OK != status) {
-    return LM75B_ERROR;
-  }
-
-  return LM75B_OK;
+  return ret_val;
 }
 
 /**
@@ -61,15 +63,18 @@ static LM75B_Status_e lm75b_read_register(const uint8_t reg_addr,
 static LM75B_Status_e lm75b_write_register(const uint8_t reg_addr,
                                            uint8_t data) {
   HAL_StatusTypeDef status;
+  LM75B_Status_e ret_val = LM75B_OK;
+
   uint8_t tx_buff[2U] = {reg_addr, data};
+
   status = HAL_I2C_Master_Transmit(&hi2c4, (I2C_ADDRESS << 1U), &tx_buff[0U],
                                    sizeof(tx_buff), I2C_TIMEOUT_100_MS);
 
   if (HAL_OK != status) {
-    return LM75B_ERROR;
+    ret_val = LM75B_ERROR;
   }
 
-  return LM75B_OK;
+  return ret_val;
 }
 
 /*
@@ -84,28 +89,25 @@ static LM75B_Status_e lm75b_write_register(const uint8_t reg_addr,
  * @param
  * @retval
  */
-LM75B_Status_e lm75b_get_ambient_temp(double *buff) {
+LM75B_Status_e lm75b_get_ambient_temp(double *ptr_buff) {
 
-  LM75B_Status_e status;
+  LM75B_Status_e ret_val;
   uint8_t temp_buff[2U];
   uint16_t raw_temp = 0U;
 
-  if (NULL == buff) {
-    return LM75B_ERROR;
+  if (NULL != ptr_buff) {
+    ret_val =
+        lm75b_read_register(TEMPERATURE_REG, temp_buff, sizeof(temp_buff));
+
+    raw_temp = (uint16_t)((temp_buff[0U] << 8U) | temp_buff[1U]);
+    raw_temp >>= 5U;
+
+    *ptr_buff = (raw_temp * 0.125F);
+  } else {
+    ret_val = LM75B_ERROR;
   }
 
-  status = lm75b_read_register(TEMPERATURE_REG, temp_buff, sizeof(temp_buff));
-
-  if (LM75B_ERROR == status) {
-    return LM75B_ERROR;
-  }
-
-  raw_temp = (uint16_t)((temp_buff[0U] << 8U) | temp_buff[1U]);
-  raw_temp >>= 5U;
-
-  *buff = (raw_temp * 0.125F);
-
-  return LM75B_OK;
+  return ret_val;
 }
 /**
  * @brief This function initialize the LM75B temperature sensor.
@@ -116,11 +118,13 @@ LM75B_Status_e lm75b_get_ambient_temp(double *buff) {
 LM75B_Status_e lm75b_init(void) {
 
   I2C_DeviceStatus_e status;
+  LM75B_Status_e ret_val = LM75B_OK;
+
   status = IM_I2C_bus_scanner(I2C_ADDRESS);
 
-  if ((uint8_t)LM75B_OK != status) {
-    return LM75B_ERROR;
+  if (I2C_ADDRESS_FOUND != status) {
+    ret_val = LM75B_ERROR;
   }
 
-  return LM75B_OK;
+  return ret_val;
 }

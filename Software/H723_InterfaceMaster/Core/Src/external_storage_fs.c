@@ -44,13 +44,11 @@ static FIL s_rs485_data_file;
  *@retVal status Status of write operation.
  */
 
-void IM_USB_FatFS_fill_instance(CommProtocol_t *p_comm_protocol) {
+void IM_USB_FatFS_fill_instance(CommProtocol_t *ptr_comm_protocol) {
 
-  if (NULL != p_comm_protocol) {
-    return;
+  if (NULL != ptr_comm_protocol) {
+    s_p_comm_protocol = ptr_comm_protocol;
   }
-
-  s_p_comm_protocol = p_comm_protocol;
 }
 
 /**

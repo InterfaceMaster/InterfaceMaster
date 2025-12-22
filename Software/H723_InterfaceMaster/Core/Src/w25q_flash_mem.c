@@ -37,12 +37,17 @@
  * @retval Transmit state.
  */
 static W25Q_Status_e w25q_write_enable(void) {
-  HAL_StatusTypeDef status = W25Q_ERROR;
+
+  HAL_StatusTypeDef status = HAL_OK;
+  W25Q_Status_e ret_val = W25Q_OK;
+
   status = IM_spi_send_command(W25Q_SPI_CH, WRITE_ENABLE);
+
   if (HAL_OK != status) {
-    return W25Q_ERROR;
+    ret_val = W25Q_ERROR;
   }
-  return W25Q_OK;
+
+  return ret_val;
 }
 
 /**
@@ -53,13 +58,16 @@ static W25Q_Status_e w25q_write_enable(void) {
 
 static W25Q_Status_e w25q_write_disable(void) {
 
-  HAL_StatusTypeDef status = W25Q_ERROR;
+  HAL_StatusTypeDef status = HAL_OK;
+  W25Q_Status_e ret_val = W25Q_OK;
+
   status = IM_spi_send_command(W25Q_SPI_CH, WRITE_DISABLE);
 
   if (HAL_OK != status) {
-    return W25Q_ERROR;
+    ret_val = W25Q_ERROR;
   }
-  return W25Q_OK;
+
+  return ret_val;
 }
 
 /**
@@ -68,25 +76,25 @@ static W25Q_Status_e w25q_write_disable(void) {
  * @retval Read state.
  */
 
-static W25Q_Status_e w25q_read_status_reg_1(uint8_t *p_data_buff) {
+static W25Q_Status_e w25q_read_status_reg_1(uint8_t *ptr_data_buff) {
 
-  HAL_StatusTypeDef status = W25Q_ERROR;
+  HAL_StatusTypeDef status = HAL_OK;
+  W25Q_Status_e ret_val = W25Q_OK;
+
   uint8_t temp = STATUS_REG_1;
 
   IM_spi1_cs_state(SLAVE_ENABLE);
   status = HAL_SPI_Transmit(&hspi1, &temp, sizeof(temp), HAL_MAX_DELAY);
 
-  if (HAL_OK != status) {
-    return W25Q_ERROR;
-  }
+  status = HAL_SPI_Receive(&hspi1, ptr_data_buff, 1U, HAL_MAX_DELAY);
 
-  status = HAL_SPI_Receive(&hspi1, p_data_buff, 1U, HAL_MAX_DELAY);
-
-  if (HAL_OK != status) {
-    return W25Q_ERROR;
-  }
   IM_spi1_cs_state(SLAVE_DISABLE);
-  return W25Q_OK;
+
+  if (HAL_OK != status) {
+    ret_val = W25Q_ERROR;
+  }
+
+  return ret_val;
 }
 
 /*
@@ -102,20 +110,22 @@ static W25Q_Status_e w25q_read_status_reg_1(uint8_t *p_data_buff) {
  * stored.
  * @retval Operation state.
  */
-W25Q_Status_e w25q_check_busy_bit(uint8_t *busy_bit_status) {
+W25Q_Status_e w25q_check_busy_bit(uint8_t *ptr_busy_bit_status) {
 
-  W25Q_Status_e status = W25Q_OK;
+  W25Q_Status_e status = HAL_OK;
+  W25Q_Status_e ret_val = W25Q_OK;
+
   uint8_t status_reg_data = 0U;
 
   status = w25q_read_status_reg_1(&status_reg_data);
 
-  if (W25Q_OK != status) {
-    return W25Q_ERROR;
+  if (HAL_OK != status) {
+    ret_val = W25Q_ERROR;
+  } else {
+    *ptr_busy_bit_status = status_reg_data & 0x01U;
   }
 
-  *busy_bit_status = status_reg_data & 0x01U;
-
-  return W25Q_OK;
+  return ret_val;
 }
 
 /**
@@ -131,6 +141,7 @@ W25Q_Status_e w25q_page_program(const uint32_t address, const uint8_t size,
 
   uint8_t busy_bit_status = 0u;
   HAL_StatusTypeDef status = HAL_OK;
+  W25Q_Status_e ret_val = W25Q_OK;
 
   uint8_t tx_buff[4U] = {0U};
 
@@ -141,25 +152,11 @@ W25Q_Status_e w25q_page_program(const uint32_t address, const uint8_t size,
 
   status = w25q_write_enable();
 
-  if (HAL_OK != status) {
-    return W25Q_ERROR;
-  }
-
   IM_spi1_cs_state(SLAVE_ENABLE);
   status =
       HAL_SPI_Transmit(&hspi1, &tx_buff[0U], sizeof(tx_buff), HAL_MAX_DELAY);
 
-  if (HAL_OK != status) {
-    IM_spi1_cs_state(SLAVE_DISABLE);
-    return W25Q_ERROR;
-  }
-
   status = HAL_SPI_Transmit(&hspi1, p_data_buff, size, HAL_MAX_DELAY);
-
-  if (HAL_OK != status) {
-    IM_spi1_cs_state(SLAVE_DISABLE);
-    return W25Q_ERROR;
-  }
 
   IM_spi1_cs_state(SLAVE_DISABLE);
 
@@ -168,16 +165,17 @@ W25Q_Status_e w25q_page_program(const uint32_t address, const uint8_t size,
   do {
     status = w25q_check_busy_bit(&busy_bit_status);
 
-    if (HAL_OK != status) {
-      return W25Q_ERROR;
-    }
     if ((HAL_GetTick() - start_time) > W25Q_BUSY_TIMEOUT_MS) {
-      return W25Q_TIMEOUT;
+      ret_val = W25Q_TIMEOUT;
     }
 
   } while (1U == busy_bit_status);
 
-  return W25Q_OK;
+  if (HAL_OK != status) {
+    ret_val = W25Q_ERROR;
+  }
+
+  return ret_val;
 }
 
 /**
@@ -190,6 +188,8 @@ W25Q_Status_e w25q_sector_erase(const uint32_t address) {
 
   uint8_t busy_bit_status = 0U;
   HAL_StatusTypeDef status = HAL_OK;
+  W25Q_Status_e ret_val = W25Q_OK;
+
   uint8_t tx_buff[4U] = {0U};
 
   tx_buff[0U] = SECTOR_ERASE;
@@ -199,18 +199,10 @@ W25Q_Status_e w25q_sector_erase(const uint32_t address) {
 
   status = w25q_write_enable();
 
-  if (HAL_OK != status) {
-    return W25Q_ERROR;
-  }
-
   IM_spi1_cs_state(SLAVE_ENABLE);
 
   status =
       HAL_SPI_Transmit(&hspi1, &tx_buff[0U], sizeof(tx_buff), HAL_MAX_DELAY);
-
-  if (HAL_OK != status) {
-    return W25Q_ERROR;
-  }
 
   IM_spi1_cs_state(SLAVE_DISABLE);
 
@@ -219,15 +211,16 @@ W25Q_Status_e w25q_sector_erase(const uint32_t address) {
   do {
     status = w25q_check_busy_bit(&busy_bit_status);
 
-    if (HAL_OK != status) {
-      return W25Q_ERROR;
-    }
     if ((HAL_GetTick() - start_time) > W25Q_BUSY_TIMEOUT_MS) {
-      return W25Q_TIMEOUT;
+      ret_val = W25Q_TIMEOUT;
     }
   } while (1U == busy_bit_status);
 
-  return W25Q_OK;
+  if (HAL_OK != status) {
+    ret_val = W25Q_ERROR;
+  }
+
+  return ret_val;
 }
 
 /**
@@ -241,6 +234,7 @@ W25Q_Status_e w25q_sector_erase(const uint32_t address) {
 W25Q_Status_e w25q_read_data(const uint32_t address, const uint16_t size,
                              uint8_t *p_data_buff) {
   HAL_StatusTypeDef status = HAL_OK;
+  W25Q_Status_e ret_val = W25Q_OK;
 
   uint8_t tx_buff[4U] = {0U};
 
@@ -253,18 +247,16 @@ W25Q_Status_e w25q_read_data(const uint32_t address, const uint16_t size,
 
   status =
       HAL_SPI_Transmit(&hspi1, &tx_buff[0U], sizeof(tx_buff), HAL_MAX_DELAY);
-  if (HAL_OK != status) {
-    return W25Q_ERROR;
-  }
 
   status = HAL_SPI_Receive(&hspi1, p_data_buff, size, HAL_MAX_DELAY);
-  if (HAL_OK != status) {
-    return W25Q_ERROR;
-  }
 
   IM_spi1_cs_state(SLAVE_DISABLE);
 
-  return W25Q_OK;
+  if (HAL_OK != status) {
+    ret_val = W25Q_ERROR;
+  }
+
+  return ret_val;
 }
 
 /**
@@ -274,23 +266,27 @@ W25Q_Status_e w25q_read_data(const uint32_t address, const uint16_t size,
  */
 
 W25Q_Status_e w25q_init(void) {
-  uint8_t busy_bit_status = 0U;
+
   W25Q_Status_e status = W25Q_OK;
+  W25Q_Status_e ret_val = W25Q_OK;
+
   uint32_t start_time = HAL_GetTick();
+
+  uint8_t busy_bit_status = 0U;
 
   do {
     status = w25q_check_busy_bit(&busy_bit_status);
 
-    if (W25Q_OK != status) {
-      return W25Q_ERROR;
-    }
-
     if ((HAL_GetTick() - start_time) > W25Q_BUSY_TIMEOUT_MS) {
       /*TODO: Give error*/
-      return W25Q_TIMEOUT;
+      ret_val = W25Q_TIMEOUT;
     }
 
   } while (1U == busy_bit_status);
 
-  return W25Q_OK;
+  if (HAL_OK != status) {
+    ret_val = W25Q_ERROR;
+  }
+
+  return ret_val;
 }

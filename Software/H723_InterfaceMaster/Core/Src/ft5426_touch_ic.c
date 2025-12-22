@@ -33,12 +33,11 @@
 
 static void ft5426_read_register(const uint8_t reg_addr, uint8_t *data_buff,
                                  uint8_t data_size) {
-  if (data_buff == NULL) {
-    return;
+  if (NULL != data_buff) {
+    HAL_I2C_Mem_Read(&hi2c4, (uint16_t)(I2C_ADDRESS << 1U), (uint16_t)reg_addr,
+                     I2C_MEMADD_SIZE_8BIT, data_buff, data_size,
+                     I2C_TIMEOUT_100_MS);
   }
-  HAL_I2C_Mem_Read(&hi2c4, (uint16_t)(I2C_ADDRESS << 1U), (uint16_t)reg_addr,
-                   I2C_MEMADD_SIZE_8BIT, data_buff, data_size,
-                   I2C_TIMEOUT_100_MS);
 }
 
 /**
@@ -81,7 +80,7 @@ static void ft5426_set_working_mode(void) {
  * the touch status and the X and Y coordinates of the first touch point.
  */
 
-void ft5426_get_touch_data(FT5426_TouchData_t *touch_data) {
+void ft5426_get_touch_data(FT5426_TouchData_t *ptr_touch_data) {
   uint8_t touch_points = 0U;
   uint8_t data_buff[5U];
   uint8_t data_size = sizeof(data_buff) / sizeof(data_buff[0U]);
@@ -90,9 +89,9 @@ void ft5426_get_touch_data(FT5426_TouchData_t *touch_data) {
 
   touch_points = data_buff[0U] & 0X0FU;
   if (touch_points >= 1U) {
-    touch_data->ft5426_event = (data_buff[1U] & 0xC0U) >> 6U;
-    touch_data->x_cord = ((data_buff[1U] & 0x0FU) << 8U) | data_buff[2U];
-    touch_data->y_cord = ((data_buff[3U] & 0x0FU) << 8U) | data_buff[4U];
+    ptr_touch_data->ft5426_event = (data_buff[1U] & 0xC0U) >> 6U;
+    ptr_touch_data->x_cord = ((data_buff[1U] & 0x0FU) << 8U) | data_buff[2U];
+    ptr_touch_data->y_cord = ((data_buff[3U] & 0x0FU) << 8U) | data_buff[4U];
   }
 }
 
