@@ -151,6 +151,10 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=IGSNVWXF
 
+[GeneratedDocument1]
+DocumentPath=Project Outputs for LCD_Module\Design Rule Check - LDC_Module.html
+DItemRevisionGUID=
+
 [Configuration1]
 Name=Sources
 ParameterCount=0
