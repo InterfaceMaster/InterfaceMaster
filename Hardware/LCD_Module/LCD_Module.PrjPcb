@@ -1138,36 +1138,6 @@ UpdateVariants=1
 UpdateToLatestRevision=1
 PartTypes=0
 
-[NetInfos]
-Net1=NetName=+12VDC|NetColor=clBlack
-Net2=NetName=LTDC_B[0..7]|NetColor=clBlue
-Net3=NetName=LTDC_B0|NetColor=clBlue
-Net4=NetName=LTDC_B1|NetColor=clBlue
-Net5=NetName=LTDC_B2|NetColor=clBlue
-Net6=NetName=LTDC_B3|NetColor=clBlue
-Net7=NetName=LTDC_B4|NetColor=clBlue
-Net8=NetName=LTDC_B5|NetColor=clBlue
-Net9=NetName=LTDC_B6|NetColor=clBlue
-Net10=NetName=LTDC_B7|NetColor=clBlue
-Net11=NetName=LTDC_G[0..7]|NetColor=clLime
-Net12=NetName=LTDC_G0|NetColor=clLime
-Net13=NetName=LTDC_G1|NetColor=clLime
-Net14=NetName=LTDC_G2|NetColor=clLime
-Net15=NetName=LTDC_G3|NetColor=clLime
-Net16=NetName=LTDC_G4|NetColor=clLime
-Net17=NetName=LTDC_G5|NetColor=clLime
-Net18=NetName=LTDC_G6|NetColor=clLime
-Net19=NetName=LTDC_G7|NetColor=clLime
-Net20=NetName=LTDC_R[0..7]|NetColor=clRed
-Net21=NetName=LTDC_R0|NetColor=clRed
-Net22=NetName=LTDC_R1|NetColor=clRed
-Net23=NetName=LTDC_R2|NetColor=clRed
-Net24=NetName=LTDC_R3|NetColor=clRed
-Net25=NetName=LTDC_R4|NetColor=clRed
-Net26=NetName=LTDC_R5|NetColor=clRed
-Net27=NetName=LTDC_R6|NetColor=clRed
-Net28=NetName=LTDC_R7|NetColor=clRed
-
 [Comparison Options]
 ComparisonOptions0=Kind=Net|MinPercent=75|MinMatch=3|ShowMatch=0|UseName=-1|InclAllRules=0
 ComparisonOptions1=Kind=Net Class|MinPercent=75|MinMatch=3|ShowMatch=0|UseName=-1|InclAllRules=0
