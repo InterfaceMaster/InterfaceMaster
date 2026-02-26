@@ -55,6 +55,13 @@ static void s_controller_task_CB(void);
 
 static void USB_init(void);
 
+/*
+  ==============================================================================
+                      ##### USER DEFINE TYPES #####
+  ==============================================================================
+
+  */
+
 /**
  * @brief  This structure define task config parameters.
  * @details This structure holds periodic execution of task and time tracking.
