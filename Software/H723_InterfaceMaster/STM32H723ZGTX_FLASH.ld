@@ -56,6 +56,15 @@ MEMORY
 /* Define output sections */
 SECTIONS
 {
+
+  .fw_metadata (ORIGIN(FLASH)) :
+  {
+    . = ALIGN(32);        /* H7 Flashword alignment */
+    KEEP(*(.fw_metadata_section)) 
+    . = ALIGN(512);       /* VTOR için bir sonraki bölümü 512'ye it */
+  } >FLASH
+  
+
   /* The startup code goes first into FLASH */
   .isr_vector :
   {
@@ -67,6 +76,8 @@ SECTIONS
   /* The program code and other data goes into FLASH */
   .text :
   {
+    _app_code_start_addr = .;   /* Assign the start address of the code to linker tag */
+
     . = ALIGN(4);
     *(.text)           /* .text sections (code) */
     *(.text*)          /* .text* sections (code) */
@@ -79,6 +90,9 @@ SECTIONS
 
     . = ALIGN(4);
     _etext = .;        /* define a global symbols at end of code */
+    
+    _app_code_end_addr = .;   /* Assign the end address of the code to linker tag */ 
+    
   } >FLASH
 
   /* Constant data goes into FLASH */

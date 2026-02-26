@@ -200,6 +200,8 @@ void IM_peripheral_init(void) {
 
   USB_init();
 
+  write_fw_metadata_to_flash();
+
   HAL_UARTEx_ReceiveToIdle_DMA(&huart7,
                                (uint8_t *)&s_u8_comm_rx_data_buff_0[0U],
                                (uint16_t)MAX_USB_PROTOCOL_SIZE);

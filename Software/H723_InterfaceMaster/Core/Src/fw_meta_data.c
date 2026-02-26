@@ -12,6 +12,8 @@
 
   */
 
+#include "main.h"
+
 extern uint32_t _app_code_start_addr;
 extern uint32_t _app_code_end_addr;
 
@@ -48,3 +50,49 @@ const FirmwareMetadata_t app_metadata
 
         .c_build_time = __TIME__,
 };
+
+/**
+ * @brief This function writes metadata of firmware to flash.
+ * @attention Any modification in this function not recommended.
+ * @param None.
+ * @retVal Status of operation.
+ */
+
+HAL_StatusTypeDef write_fw_metadata_to_flash(void) {
+  HAL_StatusTypeDef status = HAL_OK;
+  uint32_t flash_dst_addr = app_metadata.u32_app_start_addr;
+  uint32_t src_data_ptr = (uint32_t)&app_metadata;
+
+  status = HAL_FLASH_Unlock();
+  if (status != HAL_OK)
+    return status;
+
+  FLASH_EraseInitTypeDef flash_erase_init = {0};
+  uint32_t sector_error = 0U;
+
+  flash_erase_init.TypeErase = FLASH_TYPEERASE_SECTORS;
+  flash_erase_init.VoltageRange = FLASH_VOLTAGE_RANGE_3;
+  flash_erase_init.Sector = FLASH_SECTOR_1;
+  flash_erase_init.NbSectors = 1U;
+  flash_erase_init.Banks = FLASH_BANK_1;
+
+  status = HAL_FLASHEx_Erase(&flash_erase_init, &sector_error);
+
+  if (status == HAL_OK) {
+
+    for (uint32_t i = 0U; i < sizeof(FirmwareMetadata_t); i += 32U) {
+
+      status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, flash_dst_addr,
+                                 (src_data_ptr + i));
+
+      if (status == HAL_OK) {
+        flash_dst_addr += 32U;
+      } else {
+        break;
+      }
+    }
+  }
+
+  HAL_FLASH_Lock();
+  return status;
+}
