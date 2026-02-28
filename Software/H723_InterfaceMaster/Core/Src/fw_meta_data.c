@@ -27,7 +27,7 @@ typedef struct __attribute__((packed)) _FirmwareMetadata_t {
   uint8_t u8_app_type;
   char c_build_date[12U];
   char c_build_time[9U];
-  uint32_t u32_resereved[6U];
+  uint32_t u32_resereved[5U];
 } FirmwareMetadata_t;
 
 const FirmwareMetadata_t app_metadata
