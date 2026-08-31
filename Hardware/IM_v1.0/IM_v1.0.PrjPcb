@@ -12,8 +12,8 @@ SeparateFolders=0
 TemplateLocationPath=
 PinSwapBy_Netlabel=1
 PinSwapBy_Pin=1
-AllowPortNetNames=0
-AllowSheetEntryNetNames=1
+AllowPortNetNames=1
+AllowSheetEntryNetNames=0
 AppendSheetNumberToLocalNets=0
 NetlistSinglePinNets=0
 DefaultConfiguration=Sources
@@ -253,8 +253,161 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
+[Document13]
+DocumentPath=IM_v1.1.PcbDoc
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=GUXCOBYQ
+
 [GeneratedDocument1]
 DocumentPath=Project Outputs for IM_v1.0\Design Rule Check - IM_v1.html
+DItemRevisionGUID=
+
+[GeneratedDocument2]
+DocumentPath=Project Outputs for IM_v1.0\NC Drill\IM_v1.0-RoundHoles.TXT
+DItemRevisionGUID=
+
+[GeneratedDocument3]
+DocumentPath=Project Outputs for IM_v1.0\NC Drill\IM_v1.0-SlotHoles.TXT
+DItemRevisionGUID=
+
+[GeneratedDocument4]
+DocumentPath=Project Outputs for IM_v1.0\NC Drill\IM_v1.0.DRR
+DItemRevisionGUID=
+
+[GeneratedDocument5]
+DocumentPath=Project Outputs for IM_v1.0\Gerber\IM_v1.0.EXTREP
+DItemRevisionGUID=
+
+[GeneratedDocument6]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.EXTREP
+DItemRevisionGUID=
+
+[GeneratedDocument7]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.G1
+DItemRevisionGUID=
+
+[GeneratedDocument8]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.G2
+DItemRevisionGUID=
+
+[GeneratedDocument9]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.G3
+DItemRevisionGUID=
+
+[GeneratedDocument10]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.G4
+DItemRevisionGUID=
+
+[GeneratedDocument11]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.GBL
+DItemRevisionGUID=
+
+[GeneratedDocument12]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.GBO
+DItemRevisionGUID=
+
+[GeneratedDocument13]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.GBP
+DItemRevisionGUID=
+
+[GeneratedDocument14]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.GBS
+DItemRevisionGUID=
+
+[GeneratedDocument15]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.GM
+DItemRevisionGUID=
+
+[GeneratedDocument16]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.GTL
+DItemRevisionGUID=
+
+[GeneratedDocument17]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.GTO
+DItemRevisionGUID=
+
+[GeneratedDocument18]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.GTP
+DItemRevisionGUID=
+
+[GeneratedDocument19]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.GTS
+DItemRevisionGUID=
+
+[GeneratedDocument20]
+DocumentPath=Project Outputs for IM_v1.0\NC Drill\IM_v1.0.LDP
+DItemRevisionGUID=
+
+[GeneratedDocument21]
+DocumentPath=Project Outputs for IM_v1.0\Gerber\IM_v1.0.REP
+DItemRevisionGUID=
+
+[GeneratedDocument22]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.0\Gerber\IM_v1.0.REP
+DItemRevisionGUID=
+
+[GeneratedDocument23]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.EXTREP
+DItemRevisionGUID=
+
+[GeneratedDocument24]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.G1
+DItemRevisionGUID=
+
+[GeneratedDocument25]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.G2
+DItemRevisionGUID=
+
+[GeneratedDocument26]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.GBL
+DItemRevisionGUID=
+
+[GeneratedDocument27]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.GBO
+DItemRevisionGUID=
+
+[GeneratedDocument28]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.GBP
+DItemRevisionGUID=
+
+[GeneratedDocument29]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.GBS
+DItemRevisionGUID=
+
+[GeneratedDocument30]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.GM
+DItemRevisionGUID=
+
+[GeneratedDocument31]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.GTL
+DItemRevisionGUID=
+
+[GeneratedDocument32]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.GTO
+DItemRevisionGUID=
+
+[GeneratedDocument33]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.GTP
+DItemRevisionGUID=
+
+[GeneratedDocument34]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.GTS
+DItemRevisionGUID=
+
+[GeneratedDocument35]
+DocumentPath=Project Outputs for IM_v1.0\Gerber Files\IM_v1.1\Gerber\IM_v1.1.REP
 DItemRevisionGUID=
 
 [Configuration1]
